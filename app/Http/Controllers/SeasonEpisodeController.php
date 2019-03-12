@@ -42,5 +42,7 @@ class SeasonEpisodeController extends Controller
         }
 
         $episode->update($update);
+
+        return redirect($episode->season->path());
     }
 }
