@@ -26,6 +26,20 @@ class SeasonsController extends Controller
         return redirect($season->path());
     }
 
+    public function store() {
+        $attributes = request()->validate([
+                'season'   => 'required|numeric|min:1900|max:2019',
+                'title'    => 'required',
+                'note'     => 'nullable'
+            ]
+        );
+
+        $season = auth()->user()->seasons()->create($attributes);
+
+        return redirect($season->path());
+    }
+
+
     public function show(Season $season) {
         if (auth()->user()->isNot($season->owner)) {
             abort(403);

@@ -23,6 +23,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/season/create', 'SeasonsController@create');
 
     Route::get('/season/{season}', 'SeasonsController@show');
+    Route::patch('/season/{season}/edit', 'SeasonsController@edit');
     Route::patch('/season/{season}', 'SeasonsController@update');
 
     Route::post('/seasons', 'SeasonsController@store');
