@@ -1,48 +1,58 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="bg-white w-1/2 m-auto rounded shadow p-3">
+        <h1 class="heading is-1 text-center">Create New Season</h1>
 
-    <form method="POST" action="/seasons">
-        @csrf
+        <form method="POST" action="/seasons">
 
-        <h1 class="heading is-1">Create Season</h1>
+            @include('seasons._form', [
+                'season' => new App\Season,
+                'buttonText' => 'Create Season'
+            ]);
 
-        <div class="field">
-            <label for="title" class="label">Title</label>
+        </form>
+    </div>
 
-            <div class="control">
+    {{--<form method="POST" class="bg-white w-1/2 m-auto rounded shadow p-3" action="/seasons">--}}
+        {{--@csrf--}}
 
-                <input type="text" class="input" name="title" placeholder="Title">
+        {{--<h1 class="heading is-1 text-center">Create Season</h1>--}}
 
-            </div>
-        </div>
+        {{--<div class="field mb-2">--}}
+            {{--<label for="title" class="label font-bold">Title</label>--}}
+
+            {{--<div class="control">--}}
+
+                {{--<input type="text" class="input w-full shadow border-2" name="title" placeholder="Title">--}}
+
+            {{--</div>--}}
+        {{--</div>--}}
 
 
-        <div class="field">
-            <label for="season" class="label">Season</label>
+        {{--<div class="field mb-2">--}}
+            {{--<label for="season" class="label font-bold">Season</label>--}}
 
-            <div class="control">
+            {{--<div class="control">--}}
 
-                <input type="text" class="input" name="season" placeholder="Season">
+                {{--<input type="text" class="input w-full shadow border-2" name="season" placeholder="Season">--}}
 
-            </div>
-        </div>
+            {{--</div>--}}
+        {{--</div>--}}
 
-        <div class="field">
-            <label for="note" class="label">Note</label>
+        {{--<div class="field mb-2">--}}
+            {{--<label for="note" class="label font-bold">Note</label>--}}
 
-            <div class="control">
+            {{--<div class="control">--}}
+                {{--<textarea class="w-full shadow border-2" style="min-height: 200px" placeholder="Notes..." name="note"></textarea>--}}
+            {{--</div>--}}
+        {{--</div>--}}
 
-                <input type="text" class="input" name="note" placeholder="Note">
+        {{--<div class="field text-right">--}}
+            {{--<button type="submit" class="button is-link">Create Season</button>--}}
+            {{--<a class="button" href="/seasons">cancel</a>--}}
+        {{--</div>--}}
 
-            </div>
-        </div>
-
-        <div class="field">
-            <button type="submit" class="button is-link">Create Season</button>
-            <a href="/seasons">cancel</a>
-        </div>
-
-    </form>
+    {{--</form>--}}
 
 @endsection

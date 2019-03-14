@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Season;
 
 class SeasonsController extends Controller
@@ -14,29 +13,14 @@ class SeasonsController extends Controller
     }
 
     public function store() {
-        $attributes = request()->validate([
-                'season'   => 'required|numeric|min:1900|max:2019',
-                'title'    => 'required',
-                'note'     => 'nullable'
-            ]
-        );
-
-        $season = auth()->user()->seasons()->create($attributes);
+        $season = auth()->user()
+            ->seasons()->create($this->validation());
 
         return redirect($season->path());
     }
 
-    public function store() {
-        $attributes = request()->validate([
-                'season'   => 'required|numeric|min:1900|max:2019',
-                'title'    => 'required',
-                'note'     => 'nullable'
-            ]
-        );
-
-        $season = auth()->user()->seasons()->create($attributes);
-
-        return redirect($season->path());
+    public function edit(Season $season) {
+        return view( 'seasons.edit', compact('season'));
     }
 
 
@@ -55,10 +39,16 @@ class SeasonsController extends Controller
     public function update(Season $season) {
         $this->authorize('update', $season);
 
-        $season->update([
-            'note' => request('note')
-        ]);
+        $season->update($this->validation());
 
         return redirect($season->path());
+    }
+
+    public function validation() {
+        return request()->validate([
+            'season'   => 'required|numeric|min:1900|max:2019',
+            'title'    => 'required',
+            'note'     => 'nullable'
+        ]);
     }
 }

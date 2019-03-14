@@ -1,21 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="pb-2 flex text-sm items-center">
+    <div class="pb-2 flex text-sm items-center my-4">
         <div>
             <a class="no-underline" href="{{ url('/seasons') }}">My Seasons</a> / {{ $season->season  }} - {{ $season->title }}
         </div>
 
-        <div class="button">
-            <a href="/seasons">Go Back</a>
+        <div class="ml-auto">
+            <a class="button" href="{{ $season->path() }}/edit">Edit Season</a>
+            <a class="button" href="/seasons">Go Back</a>
         </div>
     </div>
 
     <div class="season-info">
-        <h3>{{ $season->season }} | {{ $season->title }}</h3>
-
-        <h3>Notes:</h3>
-        <textarea class="w-full shadow border-2" style="min-height: 200px;">{{ $season->note }}</textarea>
+        <div>
+            <h3 class="mt-0 pt-0">Notes:</h3>
+            <form>
+                <textarea class="w-full shadow border-2" style="min-height: 200px;">{{ $season->note }}</textarea>
+            </form>
+        </div>
 
         <h3>Bakers</h3>
 

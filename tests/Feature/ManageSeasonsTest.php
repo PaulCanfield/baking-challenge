@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Season;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Facades\Tests\Setup\SeasonFactory;
 
 class ManageSeasonsTest extends TestCase
 {
@@ -38,14 +39,19 @@ class ManageSeasonsTest extends TestCase
     public function authenticated_user_can_update_their_season() {
         $this->withoutExceptionHandling();
 
-        $this->signIn();
+        $season = SeasonFactory::create();
 
-        $season = factory('App\Season')->create([ 'owner_id' => auth()->id() ]);
+        $attributes = [
+            'note' => 'Changed',
+            'title' => 'Changed Title',
+            'season' => 1910
+        ];
 
-        $attributes = [ 'note' => 'Changed' ];
-
-        $this->patch($season->path(), $attributes)
+        $this->actingAs($season->owner)
+            ->patch($season->path(), $attributes)
             ->assertRedirect($season->path());
+
+        $this->get($season->path())->assertOk();
 
         $this->assertDatabaseHas('seasons', $attributes);
     }
@@ -115,6 +121,8 @@ class ManageSeasonsTest extends TestCase
         $season = factory('App\Season')->create();
 
         $this->get('/seasons')->assertRedirect('login');
+
+        $this->get($season->path())->assertRedirect('login');
 
         $this->get('/season/create')->assertRedirect('login');
 

@@ -82,7 +82,7 @@
 }
 
 .season-info {
-  @apply .bg-white .rounded .shadow .p-4;
+  @apply .bg-white .rounded .shadow .p-4 .pt-1;
 
   h3 {
     @apply .text-grey-darker .py-2 .text-base;
@@ -108,7 +108,7 @@
 }
 
 .button {
-  @apply .ml-auto .bg-blue .p-2 .px-4 .rounded .shadow .text-white;
+  @apply .ml-auto .bg-blue .p-2 .px-4 .rounded .shadow .text-white .no-underline;
 
   a {
     @apply .no-underline .text-sm .text-white;
