@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MakeSeasonRequest;
 use App\Season;
 
 class SeasonsController extends Controller
@@ -36,18 +37,16 @@ class SeasonsController extends Controller
         return view('seasons.create');
     }
 
-    public function update(Season $season) {
-        $this->authorize('update', $season);
-
-        $season->update($this->validation());
+    public function update(MakeSeasonRequest $request, Season $season) {
+        $season->update($request->validated());
 
         return redirect($season->path());
     }
 
     public function validation() {
         return request()->validate([
-            'season'   => 'required|numeric|min:1900|max:2019',
-            'title'    => 'required',
+            'season'   => 'sometimes|required|numeric|min:1900|max:2019',
+            'title'    => 'sometimes|required',
             'note'     => 'nullable'
         ]);
     }

@@ -9,7 +9,7 @@
             @include('seasons._form', [
                 'season' => new App\Season,
                 'buttonText' => 'Create Season'
-            ]);
+            ])
 
         </form>
     </div>

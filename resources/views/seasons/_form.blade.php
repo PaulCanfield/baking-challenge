@@ -36,7 +36,7 @@
     <div class="control">
         <textarea class="w-full shadow border-2"
                   style="min-height: 200px"
-                  placeholder="Notes..."
+                  placeholder="General Notes..."
                   name="note" >{{ $season->note }}</textarea>
     </div>
 </div>

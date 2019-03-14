@@ -14,11 +14,18 @@
 
     <div class="season-info">
         <div>
-            <h3 class="mt-0 pt-0">Notes:</h3>
-            <form>
-                <textarea class="w-full shadow border-2" style="min-height: 200px;">{{ $season->note }}</textarea>
+            <h3 class="mt-0 pt-0">Notes</h3>
+            <form action="{{ $season->path() }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <textarea class="w-full shadow border-2" style="min-height: 200px;" name="note" placeholder="General Notes...">{{ $season->note }}</textarea>
+                <div class="text-right mt-2">
+                    <input type="submit" class="button" value="Save">
+                </div>
             </form>
         </div>
+
+        <hr class="shadow h-1 bg-grey">
 
         <h3>Bakers</h3>
 
@@ -40,6 +47,8 @@
                 </form>
             </div>
         </div>
+
+        <hr class="shadow h-1 bg-grey">
 
         <h3>Episodes</h3>
 

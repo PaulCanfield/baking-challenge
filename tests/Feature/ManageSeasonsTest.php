@@ -57,6 +57,25 @@ class ManageSeasonsTest extends TestCase
     }
 
     /** @test */
+    public function an_owner_can_update_season_note() {
+        $season = SeasonFactory::create();
+
+        $attributes = [ 'note' => 'Changed' ];
+
+        $this->be($season->owner)
+            ->patch($season->path(), $attributes);
+
+        $this->assertDatabaseHas('seasons', $attributes);
+
+        $attributes = [ 'note' => null ];
+
+        $this->be($season->owner)
+            ->patch($season->path(), $attributes);
+
+        $this->assertDatabaseHas('seasons', $attributes);
+    }
+
+    /** @test */
 
     public function a_season_requires_a_title() {
         $this->actingAs(factory('App\User')->create());
