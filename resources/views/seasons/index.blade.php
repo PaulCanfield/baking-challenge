@@ -3,11 +3,10 @@
 @section('content')
 
     <div class="flex items-center mb-3">
-        <h2 class="mr-auto">Seasons</h2>
+        <h2>Seasons</h2>
 
-        <div class="button">
-            <a href="/season/create">Create New Season</a>
-        </div>
+        <a class="ml-auto button" href="/season/create">Create New Season</a>
+
     </div>
 
     <div>

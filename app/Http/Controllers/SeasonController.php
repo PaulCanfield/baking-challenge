@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MakeSeasonRequest;
 use App\Season;
 
-class SeasonsController extends Controller
+class SeasonController extends Controller
 {
     public function index() {
         $seasons = auth()->user()->seasons;

@@ -33,4 +33,8 @@ class Season extends Model
     public function addEpisode($values) {
         return $this->episodes()->create($values);
     }
+
+    public function activity() {
+        return $this->hasMany(Activity::class);
+    }
 }
