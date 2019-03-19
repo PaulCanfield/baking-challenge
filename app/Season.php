@@ -2,12 +2,12 @@
 
 namespace App;
 
-use App\Baker;
-use App\Episode;
 use Illuminate\Database\Eloquent\Model;
 
 class Season extends Model
 {
+    use RecordActivity;
+
     protected $guarded = [ ];
 
     public function path() {
@@ -36,9 +36,5 @@ class Season extends Model
 
     public function activity() {
         return $this->hasMany(Activity::class)->latest();
-    }
-
-    public function recordActivity($description) {
-        $this->activity()->create(compact('description'));
     }
 }

@@ -1,0 +1,1 @@
+Baker "<span class="text-green">{{ $activity->subject->name }}</span>" Updated

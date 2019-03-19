@@ -27,10 +27,6 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-        Season::observe(SeasonObserver::class);
-        Baker::observe(BakerObserver::class);
-        Episode::observe(EpisodeObserver::class);
+    public function boot() {
     }
 }

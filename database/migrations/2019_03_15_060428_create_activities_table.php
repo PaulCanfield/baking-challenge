@@ -18,6 +18,9 @@ class CreateActivitiesTable extends Migration
 
             $table->unsignedBigInteger('season_id');
             $table->text('description');
+            $table->text('changes')->nullable();
+
+            $table->nullableMorphs('subject');
 
             $table->timestamps();
 

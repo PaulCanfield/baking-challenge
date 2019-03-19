@@ -2,17 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Baker extends Model
+class Baker extends SeasonObject
 {
-    protected $guarded = [ ];
-
-    protected $touches = [ 'season' ];
-
-    public function season() {
-        return $this->belongsTo(Season::class);
-    }
+    use RecordActivity;
 
     public function path() {
         return '/baker/'. $this->id;

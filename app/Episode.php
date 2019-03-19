@@ -2,20 +2,12 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Episode extends Model
+class Episode extends SeasonObject
 {
-    protected $guarded = [ ];
-
-    protected $touches = [ 'season' ];
+    use RecordActivity;
 
     public function path() {
         return "/episode/{$this->id}";
-    }
-
-    public function season() {
-        return $this->belongsTo(Season::class);
     }
 
     public function episodeName() {
