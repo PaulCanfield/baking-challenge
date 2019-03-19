@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class SeasonTest extends TestCase
 {
     use RefreshDatabase;
+
     /** @test */
 
     public function it_has_a_path() {

@@ -15,7 +15,7 @@ class SeasonObserver
      */
     public function created(Season $season)
     {
-        $this->recordActivity($season, 'Season Created');
+        $season->recordActivity('season.created');
     }
 
     /**
@@ -26,7 +26,7 @@ class SeasonObserver
      */
     public function updated(Season $season)
     {
-        $this->recordActivity($season, 'Season Updated');
+        $season->recordActivity('season.updated');
     }
 
     /**
@@ -60,12 +60,5 @@ class SeasonObserver
     public function forceDeleted(Season $season)
     {
         //
-    }
-
-    protected function recordActivity(Season $season, $description) {
-        Activity::create([
-            'season_id' => $season->id,
-            'description' => $description
-        ]);
     }
 }

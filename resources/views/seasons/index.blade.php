@@ -4,13 +4,10 @@
 
     <div class="flex items-center mb-3">
         <h2>Seasons</h2>
-
         <a class="ml-auto button" href="/season/create">Create New Season</a>
-
     </div>
 
     <div>
-
         @forelse ($seasons as $index => $season)
             <div class="pb-2">
                 @include('seasons.card')
@@ -20,6 +17,6 @@
                 No seasons yet.
             </div>
         @endforelse
-
     </div>
+
 @endsection
