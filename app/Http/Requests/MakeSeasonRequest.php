@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Season;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -14,7 +15,16 @@ class MakeSeasonRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('update', $this->route('season'));
+        switch ($this->method()) {
+            case 'POST':
+                return auth()->user()->can('create', Season::class);
+                break;
+            case 'PATCH':
+                return Gate::allows('update', $this->route('season') );
+                break;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -25,7 +35,7 @@ class MakeSeasonRequest extends FormRequest
     public function rules()
     {
         return [
-            'season'   => 'sometimes|required|numeric|min:1900|max:2019',
+            'year'     => 'sometimes|required|numeric|min:1900|max:2019',
             'title'    => 'sometimes|required',
             'note'     => 'nullable'
         ];

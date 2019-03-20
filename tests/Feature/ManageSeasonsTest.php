@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Tests\TestCase;
 use App\Season;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -31,7 +32,7 @@ class ManageSeasonsTest extends TestCase
         $this->assertDatabaseHas('seasons',  $attributes);
 
         $this->get('/seasons')
-            ->assertSee($attributes['season'])
+            ->assertSee($attributes['year'])
             ->assertSee($attributes['title']);
     }
 
@@ -42,9 +43,9 @@ class ManageSeasonsTest extends TestCase
         $season = SeasonFactory::create();
 
         $attributes = [
-            'note' => 'Changed',
+            'note'  => 'Changed',
             'title' => 'Changed Title',
-            'season' => 1910
+            'year'  => 1910
         ];
 
         $this->actingAs($season->owner)
@@ -89,13 +90,13 @@ class ManageSeasonsTest extends TestCase
 
     /** @test */
 
-    public function a_season_requires_a_season() {
-        $this->actingAs(factory('App\User')->create());
+    public function a_season_requires_a_year() {
+        $this->actingAs(factory(User::class)->create());
 
-        $attributes = factory('App\Season')->raw(['season' => '']);
+        $attributes = factory(Season::class)->raw(['year' => '']);
 
         $this->post('/seasons', $attributes)
-            ->assertSessionHasErrors('season');
+            ->assertSessionHasErrors('year');
     }
 
     /** @test */
@@ -109,7 +110,7 @@ class ManageSeasonsTest extends TestCase
 
         $this->get($season->path())
             ->assertSee($season->title)
-            ->assertSee($season->season)
+            ->assertSee($season->year)
             ->assertSee($season->note);
     }
 

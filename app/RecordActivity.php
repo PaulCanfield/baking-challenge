@@ -13,7 +13,6 @@ use Illuminate\Support\Arr;
 
 trait RecordActivity
 {
-
     public static function bootRecordActivity() {
         $recordableEvents = [
             'created', 'updated', 'deleted'
@@ -33,9 +32,10 @@ trait RecordActivity
 
     public function recordActivity($description) {
         $values = [
+            'user_id'     => class_basename($this) == 'Season' ? $this->owner->id : $this->season->owner->id,
             'description' => $description,
-            'changes' => $this->getActivityChanges(),
-            'season_id' => class_basename($this) == 'Season' ? $this->id : $this->season_id
+            'changes'     => $this->getActivityChanges(),
+            'season_id'   => class_basename($this) == 'Season' ? $this->id : $this->season_id
         ];
 
         $this->activity()->create($values);

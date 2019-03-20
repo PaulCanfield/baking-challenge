@@ -17,16 +17,16 @@
 
 
 <div class="field mb-2">
-    <label for="season" class="label font-bold">Season</label>
+    <label for="season" class="label font-bold">Year</label>
 
     <div class="control">
 
         <input type="text"
                class="input w-full shadow border-2"
-               name="season"
-               placeholder="Season"
+               name="year"
+               placeholder="Year"
                required
-               value="{{ $season->season }}">
+               value="{{ $season->year }}">
     </div>
 </div>
 

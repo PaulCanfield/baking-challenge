@@ -16,10 +16,10 @@ class CreateSeasonsTable extends Migration
         Schema::create('seasons', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedInteger('season');
             $table->unsignedBigInteger('owner_id');
             $table->string('title', 100);
             $table->string('note', 255)->nullable();
+            $table->unsignedInteger('year');
 
             $table->timestamps();
 

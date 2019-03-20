@@ -17,6 +17,8 @@ class CreateActivitiesTable extends Migration
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('season_id');
+            $table->unsignedBigInteger('user_id');
+
             $table->text('description');
             $table->text('changes')->nullable();
 
@@ -28,6 +30,12 @@ class CreateActivitiesTable extends Migration
                 ->references('id')
                 ->on('seasons')
                 ->onDelete('cascade');
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
         });
     }
 

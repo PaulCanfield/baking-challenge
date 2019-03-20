@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Season;
+use App\Policies\SeasonPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Season' => 'App\Policies\SeasonPolicy',
+//        Season::class => SeasonPolicy::class
     ];
 
     /**

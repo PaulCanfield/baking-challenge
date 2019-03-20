@@ -13,9 +13,9 @@ class SeasonController extends Controller
         return view ('seasons.index', compact('seasons'));
     }
 
-    public function store() {
+    public function store(MakeSeasonRequest $request) {
         $season = auth()->user()
-            ->seasons()->create($this->validation());
+            ->seasons()->create($request->validated());
 
         return redirect($season->path());
     }
@@ -26,9 +26,7 @@ class SeasonController extends Controller
 
 
     public function show(Season $season) {
-        if (auth()->user()->isNot($season->owner)) {
-            abort(403);
-        }
+        $this->authorize('view', $season);
 
         return view('seasons.show', compact('season'));
     }
@@ -41,13 +39,5 @@ class SeasonController extends Controller
         $season->update($request->validated());
 
         return redirect($season->path());
-    }
-
-    public function validation() {
-        return request()->validate([
-            'season'   => 'sometimes|required|numeric|min:1900|max:2019',
-            'title'    => 'sometimes|required',
-            'note'     => 'nullable'
-        ]);
     }
 }
