@@ -12,6 +12,10 @@ class Activity extends Model
         'changes' => 'array'
     ];
 
+    public function season() {
+        return $this->belongsTo(Season::class);
+    }
+
     public function subject() {
         return $this->morphTo();
     }

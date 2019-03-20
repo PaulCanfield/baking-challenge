@@ -52,9 +52,10 @@ class TriggerActivityTest extends TestCase
 
         $season->addBaker(['name' => 'Baker Name']);
 
-        $this->assertCount(2, $season->activity);
 
-        tap($season->activity->last(), function ($activity) {
+        $this->assertCount(2, $season->activities);
+
+        tap($season->activities->last(), function ($activity) {
             $this->assertEquals('baker_created', $activity->description);
             $this->assertInstanceOf(Baker::class, $activity->subject);
         });
@@ -69,11 +70,11 @@ class TriggerActivityTest extends TestCase
         $this->be($season->owner)
             ->patch($season->bakers->first()->path(), $values);
 
-        tap($season->activity->last(), function ($activity) {
+        tap($season->activities->last(), function ($activity) {
             $this->assertEquals('baker_updated', $activity->description);
             $this->assertInstanceOf(Baker::class, $activity->subject);
         });
-        $this->assertCount(3, $season->activity);
+        $this->assertCount(3, $season->activities);
     }
 
     /** @test */
@@ -84,12 +85,12 @@ class TriggerActivityTest extends TestCase
 
         $season->addEpisode($values);
 
-        tap($season->activity->last(), function ($activity) {
+        tap($season->activities->last(), function ($activity) {
             $this->assertEquals('episode_created', $activity->description);
             $this->assertInstanceOf(Episode::class, $activity->subject);
         });
 
-        $this->assertCount(2, $season->activity);
+        $this->assertCount(2, $season->activities);
     }
 
     /** @test */
@@ -101,12 +102,12 @@ class TriggerActivityTest extends TestCase
         $this->be($season->owner)
             ->patch($season->episodes->first()->path(), $values);
 
-        tap($season->activity->last(), function ($activity) {
+        tap($season->activities->last(), function ($activity) {
             $this->assertEquals('episode_updated', $activity->description);
             $this->assertInstanceOf(Episode::class, $activity->subject);
         });
 
-        $this->assertCount(3, $season->activity);
+        $this->assertCount(3, $season->activities);
     }
 
     /** @test */
@@ -115,6 +116,6 @@ class TriggerActivityTest extends TestCase
 
         $season->bakers[0]->delete();
 
-        $this->assertCount(3, $season->activity);
+        $this->assertCount(3, $season->activities);
     }
 }

@@ -18,4 +18,11 @@ class ActivityTest extends TestCase
 
         $this->assertInstanceOf(User::class, $season->activity->first()->user);
     }
+
+    /** @test */
+    function it_has_a_subject() {
+        $season = SeasonFactory::create();
+
+        $this->assertIsObject($season->activity->first()->subject);
+    }
 }
