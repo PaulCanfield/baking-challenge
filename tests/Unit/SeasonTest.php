@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\User;
+use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,5 +37,14 @@ class SeasonTest extends TestCase
 
         $this->assertCount(1, $season->bakers);
         $this->assertTrue($season->bakers->contains($baker));
+    }
+
+    /** @test */
+    public function it_can_invite_users() {
+        $season = SeasonFactory::create();
+
+        $season->invite($user = factory(User::class)->create());
+
+        $this->assertTrue($season->members->contains($user));
     }
 }

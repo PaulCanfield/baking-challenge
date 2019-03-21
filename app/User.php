@@ -40,4 +40,12 @@ class User extends Authenticatable
     public function seasons() {
        return $this->hasMany(Season::class, 'owner_id')->latest('updated_at');
     }
+
+    public function joinedSeasons() {
+        return Season::where('owner_id', $this->id)
+            ->orWhereHas('members', function ($query) {
+                $query->where('user_id', $this->id);
+            })
+            ->get();
+    }
 }

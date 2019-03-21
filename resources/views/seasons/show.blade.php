@@ -3,12 +3,12 @@
 @section('content')
     <div class="pb-2 flex text-sm items-center my-4">
         <div>
-            <a class="no-underline" href="{{ url('/seasons') }}">My Seasons</a> / {{ $season->year  }} - {{ $season->title }}
+            <a class="no-underline" href="{{ url('/season') }}">My Seasons</a> / {{ $season->year  }} - {{ $season->title }}
         </div>
 
         <div class="ml-auto">
             <a class="button" href="{{ $season->path() }}/edit">Edit Season</a>
-            <a class="button" href="/seasons">Go Back</a>
+            <a class="button" href="">Go Back</a>
         </div>
     </div>
 

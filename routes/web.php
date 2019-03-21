@@ -19,22 +19,13 @@
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'SeasonController@index');
 
-    Route::get('/seasons', 'SeasonController@index');
-
-    Route::get('/season/create', 'SeasonController@create');
-
-    Route::get('/season/{season}', 'SeasonController@show');
-    Route::get('/season/{season}/edit', 'SeasonController@edit');
-    Route::patch('/season/{season}', 'SeasonController@update');
-
-    Route::post('/seasons', 'SeasonController@store');
+    Route::resource('season', 'SeasonController');
 
     Route::post('/season/{season}/baker', 'SeasonBakersController@store');
     Route::post('/season/{season}/episode', 'SeasonEpisodeController@store');
 
     Route::patch('/baker/{baker}', 'SeasonBakersController@update');
     Route::patch('/episode/{episode}', 'SeasonEpisodeController@update');
-
 
     Route::get('/home', 'HomeController@index')->name('home');
 });

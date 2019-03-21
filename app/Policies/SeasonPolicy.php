@@ -42,7 +42,8 @@ class SeasonPolicy
      */
     public function update(User $user, Season $season)
     {
-        return $user->is($season->owner);
+        return $season->members->contains($user) || $user->is($season->owner);
+//        return $user->is($season->owner);
     }
 
     /**

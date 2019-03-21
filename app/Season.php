@@ -37,4 +37,12 @@ class Season extends Model
     public function activities() {
         return $this->hasMany(Activity::class)->latest();
     }
+
+    public function invite($user) {
+        return $this->members()->attach($user);
+    }
+
+    public function members() {
+        return $this->belongsToMany(User::class, 'season_members')->withTimestamps();
+    }
 }

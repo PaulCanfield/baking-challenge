@@ -8,7 +8,7 @@ use App\Season;
 class SeasonController extends Controller
 {
     public function index() {
-        $seasons = auth()->user()->seasons;
+        $seasons = auth()->user()->joinedSeasons();
 
         return view ('seasons.index', compact('seasons'));
     }

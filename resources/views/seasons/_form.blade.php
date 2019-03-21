@@ -43,7 +43,7 @@
 
 <div class="field text-right">
     <button type="submit" class="button is-link">{{ $buttonText }}</button>
-    <a class="button" href="/seasons">cancel</a>
+    <a class="button" href="/season">cancel</a>
 </div>
 
 @if ($errors->any())

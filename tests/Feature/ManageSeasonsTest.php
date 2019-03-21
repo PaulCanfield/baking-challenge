@@ -24,14 +24,14 @@ class ManageSeasonsTest extends TestCase
 
         $attributes = factory('App\Season')->raw([ 'owner_id' => auth()->id() ]);
 
-        $response = $this->post('/seasons', $attributes);
+        $response = $this->post('/season', $attributes);
         $season = Season::where($attributes)->first();
 
         $response->assertRedirect($season->path());
 
         $this->assertDatabaseHas('seasons',  $attributes);
 
-        $this->get('/seasons')
+        $this->get('/season')
             ->assertSee($attributes['year'])
             ->assertSee($attributes['title']);
     }
@@ -83,7 +83,7 @@ class ManageSeasonsTest extends TestCase
 
         $attributes = factory('App\Season')->raw(['title' => '']);
 
-        $this->post('/seasons', $attributes)
+        $this->post('/season', $attributes)
             ->assertSessionHasErrors('title');
     }
 
@@ -95,7 +95,7 @@ class ManageSeasonsTest extends TestCase
 
         $attributes = factory(Season::class)->raw(['year' => '']);
 
-        $this->post('/seasons', $attributes)
+        $this->post('/season', $attributes)
             ->assertSessionHasErrors('year');
     }
 
@@ -140,14 +140,23 @@ class ManageSeasonsTest extends TestCase
     public function guests_cannot_manage_seasons() {
         $season = factory('App\Season')->create();
 
-        $this->get('/seasons')->assertRedirect('login');
+        $this->get('/season')->assertRedirect('login');
 
         $this->get($season->path())->assertRedirect('login');
 
         $this->get('/season/create')->assertRedirect('login');
 
-        $this->post('/seasons', $season->toArray())->assertRedirect('login');
+        $this->post('/season', $season->toArray())->assertRedirect('login');
 
         $this->get($season->path())->assertRedirect('login');
+    }
+
+    /** @test */
+    public function a_user_can_see_all_the_seasons_on_their_dashboard() {
+        $maurice = $this->signIn();
+
+        $project = tap(SeasonFactory::create())->invite($maurice);
+
+        $this->get('/season')->assertSee($project->title);
     }
 }
