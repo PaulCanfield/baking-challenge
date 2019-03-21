@@ -6,12 +6,18 @@
             <a class="no-underline" href="{{ url('/season') }}">My Seasons</a> / {{ $season->year  }} - {{ $season->title }}
         </div>
 
-        <div>
+        <div class="flex items-center">
             @foreach ($season->members as $index => $member)
-                <img src="" alt="{{ $member->name }}" />
+                <a class="mr-2" style="height: 32px" title="{{ $member->name }}">
+                    <img src="{{ gravatar_url($member->email) }}" alt="{{ $member->name }}" class="rounded-full shadow w-8" >
+                </a>
             @endforeach
 
-            <a class="button" href="{{ $season->path() }}/edit">Edit Season</a>
+            <a class="mr-2" style="height: 32px" title="{{ $season->owner->name }}">
+                <img src="{{ gravatar_url($member->email) }}" alt="{{ $season->owner->name }}" class="rounded-full shadow w-8 border-red border-2" >
+            </a>
+
+            <a class="button mr-2" href="{{ $season->path() }}/edit">Edit Season</a>
             <a class="button" href="">Go Back</a>
         </div>
     </header>
