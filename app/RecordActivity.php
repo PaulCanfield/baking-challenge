@@ -13,12 +13,14 @@ use Illuminate\Support\Arr;
 
 trait RecordActivity
 {
-    public static function bootRecordActivity() {
-        $recordableEvents = [
+    protected static function dispatchedEvents() {
+        return [
             'created', 'updated', 'deleted'
         ];
+    }
 
-        foreach ($recordableEvents as $event) {
+    public static function bootRecordActivity() {
+        foreach (self::dispatchedEvents() as $event) {
             static::$event(function ($model) use ($event) {
                 $event = strtolower(class_basename($model)).'_'.$event;
                 $model->recordActivity($event);
@@ -31,11 +33,13 @@ trait RecordActivity
     }
 
     public function recordActivity($description) {
+
+
         $values = [
-            'user_id'     => class_basename($this) == 'Season' ? $this->owner->id : $this->season->owner->id,
+            'user_id'     => $this->getUserId(),
             'description' => $description,
             'changes'     => $this->getActivityChanges(),
-            'season_id'   => class_basename($this) == 'Season' ? $this->id : $this->season_id
+            'season_id'   => $this->getSeasonId()
         ];
 
         $this->activity()->create($values);
@@ -46,5 +50,13 @@ trait RecordActivity
             'before' => Arr::except(array_diff($this->getOriginal(), $this->getAttributes()), 'updated_at'),
             'after'  => Arr::except($this->getChanges(), 'updated_at')
         ] : null;
+    }
+
+    public function getUserId() {
+        return $this->season->owner->id;
+    }
+
+    public function getSeasonId() {
+        return $this->season_id;
     }
 }

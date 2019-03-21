@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, RecordActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -37,6 +37,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+
     public function seasons() {
        return $this->hasMany(Season::class, 'owner_id')->latest('updated_at');
     }
@@ -46,6 +48,26 @@ class User extends Authenticatable
             ->orWhereHas('members', function ($query) {
                 $query->where('user_id', $this->id);
             })
+            ->latest()
             ->get();
     }
+
+    protected static function dispatchedEvents() {
+        return [
+            'invited'
+        ];
+    }
+
+    public static function invited($callback) {
+        static::registerModelEvent('invited', $callback);
+    }
+
+    public function getUserId() {
+        return $this->joinedSeasons()->last()->owner->id;
+    }
+
+    public function getSeasonId() {
+        return $this->joinedSeasons()->last()->id;
+    }
+
 }

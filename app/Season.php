@@ -10,6 +10,10 @@ class Season extends Model
 
     protected $guarded = [ ];
 
+    protected $observables = [
+        'invited'
+    ];
+
     public function path() {
         return "/season/{$this->id}";
     }
@@ -39,10 +43,22 @@ class Season extends Model
     }
 
     public function invite($user) {
-        return $this->members()->attach($user);
+        $member = $this->members()->attach($user);
+
+        $user->fireModelEvent('invited');
+
+        return $member;
     }
 
     public function members() {
         return $this->belongsToMany(User::class, 'season_members')->withTimestamps();
+    }
+
+    public function getUserId() {
+        return $this->owner->id;
+    }
+
+    public function getSeasonId() {
+        return $this->id;
     }
 }

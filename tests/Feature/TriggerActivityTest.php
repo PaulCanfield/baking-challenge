@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Baker;
 use App\Episode;
+use App\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -117,5 +118,21 @@ class TriggerActivityTest extends TestCase
         $season->bakers[0]->delete();
 
         $this->assertCount(3, $season->activities);
+    }
+
+    /** @test */
+    function inviting_a_user() {
+        $this->withoutExceptionHandling();
+
+        $season = tap(SeasonFactory::create())->invite(
+            $maurice = factory(User::class)->create()
+        );
+
+        $this->assertCount(2, $season->activities);
+
+        $activity = $season->activities->last();
+
+        $this->assertEquals($activity->description, 'user_invited');
+        $this->assertEquals($activity->subject->name, $maurice->name);
     }
 }

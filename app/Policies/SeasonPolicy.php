@@ -17,9 +17,8 @@ class SeasonPolicy
      * @param  \App\Season  $season
      * @return mixed
      */
-    public function view(User $user, Season $season)
-    {
-        return $user->is($season->owner);
+    public function view(User $user, Season $season) {
+        return $season->members->contains($user) || $user->is($season->owner);
     }
 
     /**
@@ -28,8 +27,7 @@ class SeasonPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
-    {
+    public function create(User $user) {
         return auth()->user()->is($user);
     }
 
@@ -40,8 +38,7 @@ class SeasonPolicy
      * @param  \App\Season  $season
      * @return mixed
      */
-    public function update(User $user, Season $season)
-    {
+    public function update(User $user, Season $season) {
         return $season->members->contains($user) || $user->is($season->owner);
 //        return $user->is($season->owner);
     }
@@ -53,8 +50,7 @@ class SeasonPolicy
      * @param  \App\Season  $season
      * @return mixed
      */
-    public function delete(User $user, Season $season)
-    {
+    public function delete(User $user, Season $season) {
         //
     }
 
@@ -65,8 +61,7 @@ class SeasonPolicy
      * @param  \App\Season  $season
      * @return mixed
      */
-    public function restore(User $user, Season $season)
-    {
+    public function restore(User $user, Season $season) {
         //
     }
 
@@ -77,8 +72,7 @@ class SeasonPolicy
      * @param  \App\Season  $season
      * @return mixed
      */
-    public function forceDelete(User $user, Season $season)
-    {
+    public function forceDelete(User $user, Season $season) {
         //
     }
 }

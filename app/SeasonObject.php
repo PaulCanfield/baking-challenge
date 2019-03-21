@@ -13,4 +13,8 @@ class SeasonObject extends Model
     public function season() {
         return $this->belongsTo(Season::class);
     }
+
+    public function getUserId() {
+        return $this->season->owner->id;
+    }
 }

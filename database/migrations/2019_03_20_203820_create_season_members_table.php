@@ -19,7 +19,7 @@ class CreateSeasonMembersTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('season_id');
 
-            $table->index(['project_id', 'user_id']);
+            $table->index(['season_id', 'user_id']);
 
             $table->timestamps();
         });

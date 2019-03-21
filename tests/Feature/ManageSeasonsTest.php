@@ -155,8 +155,9 @@ class ManageSeasonsTest extends TestCase
     public function a_user_can_see_all_the_seasons_on_their_dashboard() {
         $maurice = $this->signIn();
 
-        $project = tap(SeasonFactory::create())->invite($maurice);
+        $season = tap(SeasonFactory::create())->invite($maurice);
 
-        $this->get('/season')->assertSee($project->title);
+        $this->get($season->path())->assertSee($season->title);
     }
+
 }
