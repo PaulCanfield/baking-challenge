@@ -18,14 +18,14 @@
             </a>
 
             <a class="button mr-2" href="{{ $season->path() }}/edit">Edit Season</a>
-            <a class="button" href="">Go Back</a>
+            <a class="button" href="/">Go Back</a>
         </div>
     </header>
 
     <div class="flex">
 
         <div class="season-info w-3/4">
-            <div>
+            <div class="card mb-2">
                 <h3 class="mt-0 pt-0">Notes</h3>
                 <form action="{{ $season->path() }}" method="POST">
                     @csrf
@@ -37,11 +37,9 @@
                 </form>
             </div>
 
-            <hr class="shadow h-1 bg-grey">
+            <div class="bakers card mb-2">
+                <h3>Bakers</h3>
 
-            <h3>Bakers</h3>
-
-            <div class="bakers">
                 @foreach ($season->bakers as $index => $baker)
                     <div class="baker">
                         <form method="POST" class="w-full" action="{{ $baker->path() }}">
@@ -60,11 +58,9 @@
                 </div>
             </div>
 
-            <hr class="shadow h-1 bg-grey">
+            <div class="episodes card mb-2">
+                <h3>Episodes</h3>
 
-            <h3>Episodes</h3>
-
-            <div class="episodes">
                 @foreach ($season->episodes as $index => $episode)
                     <div class="episode">
                         <form method="POST" class="w-full" action="{{ $episode->path() }}">
@@ -93,10 +89,20 @@
 
         </div>
 
-        <div class="w-1/4 ml-4">
-            <h3 class="mt-0 pt-0">Activity</h3>
+        <div class="w-1/4 ml-4 sidebar">
+            <div class="card mb-2">
+                <h3 class="mt-0 pt-0">Invite</h3>
+                <form action="{{ $season->path() }}/post" class="w-full flex text-sm" method="POST">
+                    @csrf
+
+                    <input type="text" class="flex-1 mr-2 shadow pl-2" placeholder="Email address...">
+                    <input type="submit" class="button-sm text-xs" value="Invite">
+                </form>
+            </div>
 
             <div class="p-2 bg-white shadow rounded">
+                <h3 class="mt-0 pt-0">Activity</h3>
+
                 @include('seasons.activity.card')
             </div>
         </div>

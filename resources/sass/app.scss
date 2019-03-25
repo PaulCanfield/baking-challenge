@@ -76,17 +76,20 @@
  * @import "utilities/skew-transforms";
  */
 
+h3 {
+  @apply .text-grey-darker .py-2 .text-base;
+}
 
 .card {
   @apply .bg-white .rounded .shadow .p-2;
+
+  h3 {
+    @apply .pt-0 .mt-0;
+  }
 }
 
 .season-info {
   //@apply .bg-white .rounded .shadow .p-4 .pt-1;
-
-  h3 {
-    @apply .text-grey-darker .py-2 .text-base;
-  }
 
   ul {
     @apply .list-reset;
@@ -109,4 +112,8 @@
 
 .button {
   @apply .ml-auto .bg-blue .p-2 .px-4 .rounded .shadow .text-white .no-underline .text-sm;
+}
+
+.button-sm {
+  @apply .ml-auto .bg-blue .p-1 .px-2 .rounded .shadow .text-white .no-underline .text-xs;
 }

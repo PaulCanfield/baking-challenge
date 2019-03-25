@@ -6186,6 +6186,13 @@ table {
  * @import "utilities/skew-transforms";
  */
 
+h3 {
+  color: #606f7b;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  font-size: 1rem;
+}
+
 .card {
   background-color: #fff;
   border-radius: .25rem;
@@ -6193,11 +6200,9 @@ table {
   padding: .5rem;
 }
 
-.season-info h3 {
-  color: #606f7b;
-  padding-top: .5rem;
-  padding-bottom: .5rem;
-  font-size: 1rem;
+.card h3 {
+  padding-top: 0;
+  margin-top: 0;
 }
 
 .season-info ul {
@@ -6234,6 +6239,19 @@ table {
   color: #fff;
   text-decoration: none;
   font-size: .875rem;
+}
+
+.button-sm {
+  margin-left: auto;
+  background-color: #3490dc;
+  padding: .25rem;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  border-radius: .25rem;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1);
+  color: #fff;
+  text-decoration: none;
+  font-size: .75rem;
 }
 
 @media (min-width: 576px) {
