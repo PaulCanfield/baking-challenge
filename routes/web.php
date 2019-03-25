@@ -17,6 +17,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/season/{season}/baker', 'SeasonBakersController@store');
     Route::post('/season/{season}/episode', 'SeasonEpisodeController@store');
+    Route::post('/season/{season}/invite', 'InvitationController@store');
 
     Route::patch('/baker/{baker}', 'SeasonBakersController@update');
     Route::patch('/episode/{episode}', 'SeasonEpisodeController@update');

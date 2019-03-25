@@ -14,7 +14,7 @@
             @endforeach
 
             <a class="mr-2" style="height: 32px" title="{{ $season->owner->name }}">
-                <img src="{{ gravatar_url($member->email) }}" alt="{{ $season->owner->name }}" class="rounded-full shadow w-8 border-red border-2" >
+                <img src="{{ gravatar_url($season->owner->name) }}" alt="{{ $season->owner->name }}" class="rounded-full shadow w-8 border-red border-2" >
             </a>
 
             <a class="button mr-2" href="{{ $season->path() }}/edit">Edit Season</a>
