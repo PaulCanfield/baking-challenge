@@ -22,12 +22,11 @@ class SeasonBakersTest extends TestCase
 
     /** @test */
     public function only_owner_of_a_season_can_add_a_baker() {
-        $season = app(SeasonFactory::class)
-            ->create();
+        $season = SeasonFactory::create();
 
         $baker = factory(Baker::class)->raw();
 
-        $this->actingAs($this->signIn())
+        $this->be(factory(User::class)->create())
             ->post($season->path() .'/baker', $baker)
             ->assertStatus(403);
 
@@ -36,9 +35,7 @@ class SeasonBakersTest extends TestCase
 
     /** @test */
     public function only_owner_of_a_season_can_update_a_baker() {
-        $season = app(SeasonFactory::class)
-            ->withBakers(1)
-            ->create();
+        $season = SeasonFactory::withBakers(1)->create();
 
         $update = [ 'name' => 'changed value' ];
 
@@ -68,9 +65,7 @@ class SeasonBakersTest extends TestCase
 
     /** @test */
     public function a_baker_can_be_updated() {
-        $season = app(SeasonFactory::class)
-            ->withBakers(1)
-            ->create();
+        $season = SeasonFactory::withBakers(1)->create();
 
         $values = [
             'name' => 'Changed Value'
