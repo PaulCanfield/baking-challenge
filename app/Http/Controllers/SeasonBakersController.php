@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BakerFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Season;
@@ -9,14 +10,8 @@ use App\Baker;
 
 class SeasonBakersController extends Controller
 {
-    public function store(Season $season) {
-        $this->authorize('update', $season);
-
-        request()->validate([
-            'name' => 'required'
-        ]);
-
-        $season->addBaker(Input::all());
+    public function store(Season $season, BakerFormRequest $request) {
+        $season->addBaker($request->validated());
 
         return redirect($season->path());
     }

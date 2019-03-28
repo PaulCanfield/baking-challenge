@@ -4,11 +4,10 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 
-class InvitationFormRequest extends FormRequest
+class BakerFormRequest extends FormRequest
 {
-    public $errorBag = 'invitation';
+    public $errorBag = 'baker';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -28,13 +27,13 @@ class InvitationFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => [ 'required', Rule::exists('users', 'email') ]
+            'name' => 'required'
         ];
     }
 
     public function messages() {
         return [
-            'email.exists' => 'The invited user must have an account.'
+            'name' => 'A name is required to create a Baker.'
         ];
     }
 }

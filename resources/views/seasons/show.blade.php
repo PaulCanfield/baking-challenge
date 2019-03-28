@@ -50,12 +50,6 @@
                     </div>
                 @endforeach
 
-                <div class="baker">
-                    <form class="w-full" method="POST" action="{{ $season->path().'/baker' }}">
-                        @csrf
-                        <input class="w-full" type="text" placeholder="Add New Baker..." name="name">
-                    </form>
-                </div>
             </div>
 
             <div class="episodes card mb-2">
@@ -78,33 +72,30 @@
                 @endforeach
 
                 <div class="episode">
-                    <form class="w-full flex" method="POST" action="{{ $season->path().'/episode' }}">
-                        @csrf
-                        <input class="w-1/4" type="text" placeholder="Episode Number..." name="episode">
-                        <input class="w-3/4" type="text" placeholder="Episode Title..." name="title">
-                        <input class="button" type="submit" value="Add New Episode">
-                    </form>
                 </div>
             </div>
 
         </div>
 
         <div class="w-1/4 ml-4 sidebar">
-            <div class="card mb-2">
-                <h3 class="mt-0 pt-0">Invite</h3>
-                <form action="{{ $season->path() }}/post" class="w-full flex text-sm" method="POST">
-                    @csrf
-
-                    <input type="text" class="flex-1 mr-2 shadow pl-2" placeholder="Email address...">
-                    <input type="submit" class="button-sm text-xs" value="Invite">
-                </form>
-            </div>
+            @can('manage', $season)
+                @include('seasons.invite')
+            @endcan
 
             <div class="p-2 bg-white shadow rounded">
                 <h3 class="mt-0 pt-0">Activity</h3>
 
                 @include('seasons.activity.card')
             </div>
+
+            <div class="p-2 bg-white shadow rounded mt-2">
+                @include ('seasons.newbaker_form')
+            </div>
+
+            <div class="p-2 bg-white shadow rounded mt-2">
+                @include('seasons.episode_form')
+            </div>
+
         </div>
 
     </div>

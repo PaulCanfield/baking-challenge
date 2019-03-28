@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Tests\TestCase;
-use Tests\Setup\SeasonFactory;
+use Facades\Tests\Setup\SeasonFactory;
 use App\Season;
 use App\Baker;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -57,13 +58,12 @@ class SeasonBakersTest extends TestCase
             factory(Season::class)->raw()
         );
 
-        $baker = factory(Baker::class)->make();
+        $baker = factory(Baker::class)->make(['name' => "Chet O'Connle"]);
 
         $this->post($season->path() . '/baker', $baker->toArray());
 
         $this->get($season->path())
-            ->assertSee($baker->name);
-
+            ->assertSee(e($baker->name));
     }
 
     /** @test */
@@ -84,15 +84,12 @@ class SeasonBakersTest extends TestCase
 
     /** @test */
     public function a_baker_requires_a_name() {
-        $this->signIn();
+        $season = SeasonFactory::create();
 
-        $season = auth()->user()->seasons()->create(
-            factory(Season::class)->raw()
-        );
+        $baker = factory(Baker::class)->raw( [ 'name' => '' ] );
 
-        $baker = factory(Baker::class)->raw( [ 'name' => ''] );
-
-        $this->post( $season->path() . '/baker', $baker)
-            ->assertSessionHasErrors('name');
+        $this->be($season->owner)
+            ->post( $season->path() . '/baker', $baker)
+            ->assertSessionHasErrors('name', null, 'baker');
     }
 }

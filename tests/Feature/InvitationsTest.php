@@ -17,14 +17,18 @@ class InvitationsTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $max = $this->signIn();
-        $sam = factory(User::class)->create();
+//        $sam = factory(User::class)->create();
 
         $season = SeasonFactory::create();
 
         $this->actingAs($max)
-            ->post($season->path().'/invite', [
-              'email' => $sam->email
-            ])
+            ->post($season->path().'/invite')
+            ->assertStatus(403);
+
+        $season->invite($max);
+
+        $this->actingAs($max)
+            ->post($season->path().'/invite')
             ->assertStatus(403);
     }
 
@@ -48,6 +52,7 @@ class InvitationsTest extends TestCase
 
     /** @test */
     public function the_invited_email_address_must_be_associated_with_a_valid_account() {
+
         $season = SeasonFactory::create();
 
         $this->actingAs($season->owner)
@@ -56,18 +61,22 @@ class InvitationsTest extends TestCase
             ])
             ->assertSessionHasErrors([
                 'email' => 'The invited user must have an account.'
-            ]);
+            ],null, 'invitation');
     }
 
     /** @test */
     public function an_invited_user_can_add_bakers() {
-        $season = SeasonFactory::create();
+        $season = SeasonFactory::ownedBy(
+            $user = factory(User::class)->create()
+        )->create();
 
-        $season->invite($newUser = factory(User::class)->create());
+        $season->invite($user);
 
-        $this->signIn($newUser);
-
-        $this->post(action('SeasonBakersController@store', $season), ['name' => 'Baker']);
+        $this->be($user)
+            ->post(
+                action('SeasonBakersController@store', $season),
+                ['name' => 'Baker']
+            );
 
         $this->assertDatabaseHas('bakers', ['name' => 'Baker']);
     }
