@@ -3,6 +3,8 @@
 namespace Tests\Setup;
 
 use App\Episode;
+use App\EpisodeResults;
+use App\Result;
 use App\Season;
 use App\Baker;
 use App\User;
@@ -10,7 +12,8 @@ use App\User;
 class SeasonFactory
 {
     protected $bakerCount = 0;
-    protected $episodes = [ 'count' => 0, 'options' => [ ] ];
+    protected $episodes   = [ 'count' => 0, 'options' => [ ] ];
+    protected $results    = [ 'count' => 0, 'nEpisodes' => 0, 'options' => [ ] ];
     protected $user;
 
     public function withBakers($count) {
@@ -22,6 +25,16 @@ class SeasonFactory
         $this->episodes = [
             'count' => $count,
             'options' => $options
+        ];
+
+        return $this;
+    }
+
+    public function withEpisodeResults($count, $nEpisodes = 0, $options = [ ]) {
+        $this->results = [
+            'count'     => $count,
+            'nEpisodes' => $nEpisodes ?: $this->episodes['count'],
+            'options'   => $options
         ];
 
         return $this;
@@ -40,12 +53,26 @@ class SeasonFactory
 
         $seasonId = [ 'season_id' => $season->id ];
 
-        factory(Baker::class, $this->bakerCount)->create([
-            'season_id' => $season->id
-        ]);
+        factory(Baker::class, $this->bakerCount)->create($seasonId);
 
         factory(Episode::class, $this->episodes['count'])
             ->create(array_merge($seasonId, $this->episodes['options']));
+
+        $results = factory(Result::class, $this->results['count'])
+            ->create($this->results['options']);
+
+        foreach ($season->episodes as $index => $episode) {
+            if ($index >= $this->results['nEpisodes']) {
+                break;
+            }
+
+            $results->each(function () use ($episode) {
+                factory(EpisodeResults::class)->create([
+                    'episode_id' => $episode->id,
+                    'baker_id' => $episode->season->bakers->random()
+                ]);
+            });
+        }
 
         return $season;
     }

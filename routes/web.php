@@ -22,6 +22,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('/baker/{baker}', 'SeasonBakersController@update');
     Route::patch('/episode/{episode}', 'SeasonEpisodeController@update');
 
+    Route::post('/episode/{episode}/result', 'EpisodeResultsController@store');
+
     Route::get('/home', 'HomeController@index')->name('home');
 });
 

@@ -13,4 +13,16 @@ class Episode extends SeasonObject
     public function episodeName() {
         return "Episode {$this->episode}";
     }
+
+    public function bakers() {
+        return $this->season->bakers;
+    }
+
+    public function results() {
+        return $this->hasMany(EpisodeResults::class);
+    }
+
+    public function addResult($values) {
+        return $this->results()->create($values);
+    }
 }
