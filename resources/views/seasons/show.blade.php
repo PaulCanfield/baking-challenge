@@ -57,22 +57,9 @@
 
                 @foreach ($season->episodes as $index => $episode)
                     <div class="episode">
-                        <form method="POST" class="w-full" action="{{ $episode->path() }}">
-                            @csrf
-                            @method('PATCH')
-                            Episode: <input class="w-full" value="{{ $episode->episode }}" name="episode">
-                        </form>
-
-                        <form method="POST" class="w-full" action="{{ $episode->path() }}">
-                            @csrf
-                            @method('PATCH')
-                            <input class="w-full" value="{{ $episode->title }}" name="title">
-                        </form>
+                        @include('seasons.episode.card')
                     </div>
                 @endforeach
-
-                <div class="episode">
-                </div>
             </div>
 
         </div>

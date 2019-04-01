@@ -46,10 +46,4 @@
     <a class="button" href="/season">cancel</a>
 </div>
 
-@if ($errors->any())
-    <div class="mt-6 text-red text-sm">
-        @foreach( $errors->all() as $error)
-             <li>{{ $error }}</li>
-        @endforeach
-    </div>
-@endif
+@include('errors')
