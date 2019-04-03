@@ -1,0 +1,1 @@
+Baker <span class="text-blue italic">'{{ $result->baker->name }}'</span> was awarded Star Baker!

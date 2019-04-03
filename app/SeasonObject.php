@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class SeasonObject extends Model
@@ -16,5 +17,9 @@ class SeasonObject extends Model
 
     public function getUserId() {
         return $this->season->owner->id;
+    }
+
+    public function apply(Builder $builder, Model $model) {
+        parent::apply($builder, $model);
     }
 }

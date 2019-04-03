@@ -14,10 +14,7 @@ class InvitationsTest extends TestCase
 
     /** @test */
     public function non_owners_can_not_invite_users() {
-        //$this->withoutExceptionHandling();
-
         $max = $this->signIn();
-//        $sam = factory(User::class)->create();
 
         $season = SeasonFactory::create();
 

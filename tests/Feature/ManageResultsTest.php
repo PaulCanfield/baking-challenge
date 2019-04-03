@@ -2,13 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Episode;
 use App\Result;
-use App\User;
 use Facades\Tests\Setup\SeasonFactory;
-use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 
@@ -38,11 +34,28 @@ class ManageResultsTest extends TestCase
     public function unauthorized_users_can_not_create_results() {
         $this->signIn();
 
-        $this->post(
-            '/result'
-        )->assertStatus(403);
+        $this->post('/result')->assertStatus(403);
 
         $this->get('/result')
             ->assertStatus(403);
+    }
+
+    /** @test */
+    public function when_an_owner_of_a_season_creates_a_result_eliminated_is_not_required() {
+        $this->withoutExceptionHandling();
+
+        $values = [
+            'result' => 'Some Result'
+        ];
+
+        Session::put('requestReferrer', '/');
+
+        $this->be(SeasonFactory::create()->owner)
+            ->post(
+                '/result',
+                $values
+            );
+
+        $this->assertDatabaseHas('results', $values);
     }
 }

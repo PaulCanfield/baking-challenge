@@ -52,23 +52,15 @@
 
             </div>
 
-            <div class="episodes card mb-2">
-                <h3>Episodes</h3>
-
-                @foreach ($season->episodes as $index => $episode)
-                    <div class="episode">
-                        @include('seasons.episode.card')
-                    </div>
-                @endforeach
-            </div>
+            @foreach ($season->episodes as $index => $episode)
+                <div class="episode card">
+                    @include('seasons.episode.card')
+                </div>
+            @endforeach
 
         </div>
 
         <div class="w-1/4 ml-4 sidebar">
-            @can('manage', $season)
-                @include('seasons.invite')
-            @endcan
-
             <div class="p-2 bg-white shadow rounded">
                 <h3 class="mt-0 pt-0">Activity</h3>
 
@@ -82,6 +74,12 @@
             <div class="p-2 bg-white shadow rounded mt-2">
                 @include('seasons.episode_form')
             </div>
+
+            @can('manage', $season)
+                @include('seasons.result.card')
+
+                @include('seasons.invite')
+            @endcan
 
         </div>
 

@@ -28,7 +28,8 @@ class MakeResultRequest extends FormRequest
     {
         return [
             'result' => 'required|string',
-            'eliminated' => 'sometimes|boolean'
+            'eliminated' => 'sometimes|boolean',
+            'key' => 'sometimes'
         ];
     }
 }

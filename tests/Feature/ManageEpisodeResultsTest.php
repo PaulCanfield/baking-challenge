@@ -15,6 +15,8 @@ class ManageEpisodeResultsTest extends TestCase
 
     /** @test */
     public function the_owner_of_a_season_can_update_episode_results() {
+        $this->withoutExceptionHandling();
+
         $season = SeasonFactory::withBakers(4)
             ->withEpisodes(1)
             ->create();

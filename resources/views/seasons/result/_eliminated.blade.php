@@ -1,0 +1,1 @@
+Baker <span class="text-red italic">'{{ $result->baker->name }}'</span> was eliminated!

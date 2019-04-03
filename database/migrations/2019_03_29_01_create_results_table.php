@@ -17,7 +17,8 @@ class CreateResultsTable extends Migration
             $table->bigIncrements('id');
 
             $table->string('result');
-            $table->boolean('eliminated');
+            $table->boolean('eliminated')->default(false);
+            $table->string('key', 55)->nullable();
 
             $table->timestamps();
         });
