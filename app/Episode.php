@@ -19,7 +19,7 @@ class Episode extends SeasonObject
             ->where('bakers.season_id', '=', $this->season->id)
             ->leftJoin('episode_results', 'bakers.id', '=', 'episode_results.baker_id')
             ->leftJoin('results', 'episode_results.result_id', '=', 'results.id')
-            ->where('results.eliminated', '!=', 0)
+            ->where('results.eliminated', '==', 0)
             ->orWhereNull('episode_results.id')
             ->get();
     }
