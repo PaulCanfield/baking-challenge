@@ -76,8 +76,6 @@ class EpisodeTest extends TestCase
         $season = SeasonFactory::withBakers(3)
             ->create();
 
-        //$this->signIn($season->owner);
-
         $episodes = [[
                 'episode' => 1,
                 'title' => 'Pastry Week'

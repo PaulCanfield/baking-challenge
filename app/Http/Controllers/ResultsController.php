@@ -16,7 +16,7 @@ class ResultsController extends Controller
             return response('Unauthorized', 403);
         }
 
-        $requestReferrer = URL::previous();
+        $requestReferrer = URL::previous() ?: '/';
 
         if (!session()->exists('requestReferrer')) {
             session(compact('requestReferrer'));

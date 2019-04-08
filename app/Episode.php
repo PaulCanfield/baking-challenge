@@ -28,7 +28,17 @@ class Episode extends SeasonObject
         return $this->hasMany(EpisodeResults::class);
     }
 
+    public function predictions() {
+        return $this->hasMany(Prediction::class);
+    }
+
     public function addResult($values) {
         return $this->results()->create($values);
+    }
+
+    public function addPrediction($values) {
+        return $this->predictions()->create(array_merge([
+            'owner_id' => auth()->user()->id
+        ], $values));
     }
 }

@@ -27,6 +27,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/result', 'ResultsController@create');
     Route::Post('/result', 'ResultsController@store');
 
+    Route::Post('/episode/{episode}/prediction', 'PredictionsController@store');
+
     Route::get('/home', 'HomeController@index')->name('home');
 });
 

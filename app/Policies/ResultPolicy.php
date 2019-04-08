@@ -10,8 +10,6 @@ class ResultPolicy
 {
     use HandlesAuthorization;
 
-    public $errorBag = 'result';
-
     /**
      * Determine whether the user can view the result.
      *

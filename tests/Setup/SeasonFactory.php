@@ -14,6 +14,7 @@ class SeasonFactory
     protected $bakerCount = 0;
     protected $episodes   = [ 'count' => 0, 'options' => [ ] ];
     protected $results    = [ 'count' => 0, 'nEpisodes' => 0, 'options' => [ ] ];
+    protected $members    = [ 'count' => 0, 'options' => [ ] ];
     protected $user;
 
     public function withBakers($count) {
@@ -40,6 +41,15 @@ class SeasonFactory
         return $this;
     }
 
+    public function withMembers($count = 0, $options = [ ]) {
+        $this->members = [
+            'count' => $count,
+            'options' => $options
+        ];
+
+        return $this;
+    }
+
     public function ownedBy(User $user) {
         $this->user = $user;
 
@@ -57,6 +67,12 @@ class SeasonFactory
 
         factory(Episode::class, $this->episodes['count'])
             ->create(array_merge($seasonId, $this->episodes['options']));
+
+        factory(User::class, $this->members['count'])
+            ->create()
+            ->each(function ($user) use ($season) {
+                $season->members()->attach($user);
+            });
 
         $results = factory(Result::class, $this->results['count'])
             ->create($this->results['options']);
