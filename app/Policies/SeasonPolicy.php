@@ -46,9 +46,6 @@ class SeasonPolicy
         return $user->is($season->owner);
     }
 
-    public function predict(User $user, Season $season) {
-        return $season->members->contains($user) || $user->is($season->owner);
-    }
     /**
      * Determine whether the user can delete the season.
      *

@@ -70,4 +70,7 @@ class User extends Authenticatable
         return $this->joinedSeasons()->last()->id;
     }
 
+    public function completePredictions($episode) {
+
+    }
 }

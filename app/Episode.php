@@ -32,13 +32,39 @@ class Episode extends SeasonObject
         return $this->hasMany(Prediction::class);
     }
 
+    public function userPredictions($userId = null) {
+        return $this->predictions()
+            ->where('owner_id', '=', $userId ?: auth()->user()->id )
+            ->get();
+    }
+
+    public function completedPredictions() {
+        return $this->hasMany(CompletedPredictions::class);
+    }
+
     public function addResult($values) {
         return $this->results()->create($values);
     }
 
     public function addPrediction($values) {
         return $this->predictions()->create(array_merge([
-            'owner_id' => auth()->user()->id
+            'owner_id' => $values['owner_id'] ?? auth()->user()->id
         ], $values));
+    }
+
+    public function completePredictions($values = [ ]) {
+        return $this->completedPredictions()->create([
+            'owner_id' => $values['owner_id'] ?? auth()->user()->id
+        ]);
+    }
+
+    public function isCompleted($ids = null) {
+        $query = $this->completedPredictions();
+
+        if ($ids !== null) {
+            $query->whereIn('owner_id', (is_array($ids) ? $ids : [ $ids ]));
+        }
+
+        return $query->count() == ($ids ? (is_array($ids) ? count($ids) : 1) : count($this->season->members));
     }
 }

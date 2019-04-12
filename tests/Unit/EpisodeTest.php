@@ -44,6 +44,7 @@ class EpisodeTest extends TestCase
     public function it_can_have_results() {
         $season = SeasonFactory::withEpisodes(1)
             ->withBakers(3)
+            ->withResults(2)
             ->withEpisodeResults(2)
             ->create();
 
@@ -93,5 +94,35 @@ class EpisodeTest extends TestCase
         ]);
 
         $this->assertCount(2, $episode->bakers());
+    }
+
+    /** @test */
+    public function only_user_predictions_appear_in_user_predictions() {
+        $this->withoutExceptionHandling();
+
+        $season = SeasonFactory::withBakers(2)
+            ->withEpisodes(1)
+            ->withMembers(2)
+            ->withResults(2)
+            ->withPredictions(2)
+            ->create();
+
+        $episode = $season->episodes->first();
+        $owner = $episode->predictions->first()->owner;
+
+        $this->assertCount(2, $episode->userPredictions($owner->id));
+    }
+
+    /** @test */
+    public function it_can_be_completed() {
+        $season = SeasonFactory::withBakers(2)
+            ->withEpisodes(2)
+            ->withMembers(2)
+            ->withResults(2)
+            ->withPredictions(2)
+            ->withCompletedEpisodes()
+            ->create();
+
+        $this->assertTrue($season->episodes->first()->isCompleted());
     }
 }

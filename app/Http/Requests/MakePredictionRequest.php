@@ -14,7 +14,7 @@ class MakePredictionRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('predict', $this->route('episode')->season);
+        return Gate::allows('predict', $this->route('episode'));
     }
 
     /**

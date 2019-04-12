@@ -13,12 +13,24 @@ class SeasonFactory
 {
     protected $bakerCount = 0;
     protected $episodes   = [ 'count' => 0, 'options' => [ ] ];
-    protected $results    = [ 'count' => 0, 'nEpisodes' => 0, 'options' => [ ] ];
+    protected $episodeResults    = [ 'count' => 0, 'episodes' => 0, 'options' => [ ] ];
     protected $members    = [ 'count' => 0, 'options' => [ ] ];
+    protected $predictions = [ 'count' => 0, 'episodes' => 0, 'members' => 0, 'options' => [ ]];
+    protected $completedPredictions = [ 'episodes' => 0, 'members' => 0, 'options' => [ ] ];
     protected $user;
+    protected $results;
 
     public function withBakers($count) {
         $this->bakerCount = $count;
+        return $this;
+    }
+
+    public function withCompletedEpisodes($episodes = null, $members = null, $options = [ ]) {
+        $this->completedPredictions = [
+            'episodes'   => $episodes ?: $this->episodes['count'],
+            'members'    => $members ?: $this->members['count'],
+            'options'    => $options
+        ];
         return $this;
     }
 
@@ -31,10 +43,10 @@ class SeasonFactory
         return $this;
     }
 
-    public function withEpisodeResults($count, $nEpisodes = 0, $options = [ ]) {
-        $this->results = [
+    public function withEpisodeResults($count, $episodes = 0, $options = [ ]) {
+        $this->episodeResults = [
             'count'     => $count,
-            'nEpisodes' => $nEpisodes ?: $this->episodes['count'],
+            'episodes' => $episodes ?: $this->episodes['count'],
             'options'   => $options
         ];
 
@@ -52,6 +64,21 @@ class SeasonFactory
 
     public function ownedBy(User $user) {
         $this->user = $user;
+        return $this;
+    }
+
+    public function withResults($count = 0, $options = [ ]) {
+        $this->results = factory(Result::class, $count)->create($options);
+        return $this;
+    }
+
+    public function withPredictions($count = 0, $episodes = null, $members = null, $options = [ ]) {
+        $this->predictions = [
+            'count' => $count ?: 0,
+            'episodes' => $episodes ?: $this->episodes['count'],
+            'members' => $members ?: $this->members['count'],
+            'options' => $options
+        ];
 
         return $this;
     }
@@ -74,20 +101,55 @@ class SeasonFactory
                 $season->members()->attach($user);
             });
 
-        $results = factory(Result::class, $this->results['count'])
-            ->create($this->results['options']);
-
         foreach ($season->episodes as $index => $episode) {
-            if ($index >= $this->results['nEpisodes']) {
+            if ($index >= $this->episodeResults['episodes']) {
                 break;
             }
 
-            $results->each(function () use ($episode) {
+            $this->results->each(function () use ($episode) {
                 factory(EpisodeResults::class)->create([
                     'episode_id' => $episode->id,
-                    'baker_id' => $episode->season->bakers->random()
+                    'baker_id' => $episode->season->bakers->random()->id
                 ]);
             });
+        }
+
+        if ($this->predictions['count']) {
+            foreach ($season->episodes as $index => $episode) {
+                if ($index >= $this->predictions['episodes']) {
+                    break;
+                }
+
+                foreach ($season->members as $memberIndex => $member) {
+                    if ($memberIndex >= $this->predictions['members']) {
+                        break;
+                    }
+
+                    for ($i = 0 ; $i < $this->predictions['count'] ; $i++) {
+                        $episode->addPrediction([
+                            'owner_id' => $member->id,
+                            'baker_id' => $season->bakers->random()->id,
+                            'result_id' => $this->results->random()->id
+                        ]);
+                    }
+                }
+            }
+
+            if ($this->completedPredictions['episodes'] && $this->completedPredictions['members']) {
+                foreach ($season->episodes as $episodeIndex => $episode) {
+                    if ($episodeIndex >= $this->completedPredictions['episodes']) {
+                        break;
+                    }
+
+                    foreach ($season->members as $memberIndex => $member) {
+                        if ($memberIndex > $this->completedPredictions['members']) {
+                            continue 2;
+                        }
+
+                        $episode->completePredictions([ 'owner_id' => $member->id ]);
+                    }
+                }
+            }
         }
 
         return $season;
