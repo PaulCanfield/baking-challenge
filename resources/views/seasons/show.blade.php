@@ -7,7 +7,7 @@
         </div>
 
         <div class="flex items-center">
-            @foreach ($season->members as $index => $member)
+            @foreach ($season->getMembers() as $index => $member)
                 <a class="mr-2" style="height: 32px" title="{{ $member->name }}">
                     <img src="{{ gravatar_url($member->email) }}" alt="{{ $member->name }}" class="rounded-full shadow w-8" >
                 </a>

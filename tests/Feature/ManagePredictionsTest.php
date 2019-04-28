@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Episode;
 use App\Result;
 use App\User;
 use Facades\Tests\Setup\SeasonFactory;
@@ -18,10 +19,14 @@ class ManagePredictionsTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = SeasonFactory::withBakers(2)
-            ->withEpisodes(1)
             ->withMembers(1)
             ->withResults(2)
             ->create();
+
+        $episode = factory(Episode::class)->create([
+           'episode' => 1,
+           'season_id' => $season->id
+        ]);
 
         $values = [
             'result_id' => Result::all()->first()->id,
@@ -30,7 +35,7 @@ class ManagePredictionsTest extends TestCase
         ];
 
         $this->be($season->members()->first())
-            ->post($season->episodes->first()->path().'/prediction', $values);
+            ->post($episode->path().'/prediction', $values);
 
         $this->assertDatabaseHas('predictions', $values);
     }

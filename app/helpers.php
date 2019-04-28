@@ -8,3 +8,17 @@ function gravatar_url($email) {
         'd' => '//s3.amazonaws.com/laracasts/images/default-square-avatar.jpg'
     ]);
 }
+
+function df($object = null) {
+    $bt = debug_backtrace();
+
+    $caller = array_shift($bt);
+
+    echo <<<EOT
+<div>
+n:{$caller['line']} - {$caller['file']}    
+</div>
+EOT;
+
+    dd($object);
+}

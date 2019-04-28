@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Result;
 use App\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
@@ -14,8 +15,6 @@ class PredictionTest extends TestCase
 
     /** @test */
     function a_prediction_has_an_owner() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
             ->withMembers(1)
@@ -32,6 +31,27 @@ class PredictionTest extends TestCase
             $episode->userPredictions($user->id)
                 ->first()
                 ->owner
+        );
+    }
+
+    /** @test */
+    function it_has_a_result() {
+        $season = SeasonFactory::withBakers(2)
+            ->withEpisodes(1)
+            ->withMembers(1)
+            ->withEpisodes(1)
+            ->withResults(1)
+            ->withPredictions(1)
+            ->create();
+
+        $episode = $season->episodes->first();
+        $user = $episode->predictions->first()->owner;
+
+        $this->assertInstanceOf(
+            Result::class,
+            $episode->userPredictions($user->id)
+                ->first()
+                ->result
         );
     }
 }

@@ -67,6 +67,10 @@ class SeasonFactory
         return $this;
     }
 
+    static public function results() {
+        return Result::all();
+    }
+
     public function withResults($count = 0, $options = [ ]) {
         $this->results = factory(Result::class, $count)->create($options);
         return $this;

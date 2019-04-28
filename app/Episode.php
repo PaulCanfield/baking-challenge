@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Collection;
+
 class Episode extends SeasonObject
 {
     use RecordActivity;
@@ -15,13 +17,19 @@ class Episode extends SeasonObject
     }
 
     public function bakers() {
-        return Baker::select('*', 'bakers.id as id')
-            ->where('bakers.season_id', '=', $this->season->id)
-            ->leftJoin('episode_results', 'bakers.id', '=', 'episode_results.baker_id')
-            ->leftJoin('results', 'episode_results.result_id', '=', 'results.id')
-            ->where('results.eliminated', '==', 0)
-            ->orWhereNull('episode_results.id')
-            ->get();
+        return $this->season->bakers;
+    }
+
+    public function activeBakers() {
+        $bakers = new Collection();
+
+        foreach ($this->season->bakers as $baker) {
+            if (!$baker->isEliminated($this->episode)) {
+                $bakers[] = $baker;
+            }
+        }
+
+        return $bakers;
     }
 
     public function results() {
@@ -65,6 +73,33 @@ class Episode extends SeasonObject
             $query->whereIn('owner_id', (is_array($ids) ? $ids : [ $ids ]));
         }
 
-        return $query->count() == ($ids ? (is_array($ids) ? count($ids) : 1) : count($this->season->members));
+        $count = $query->count();
+
+        if ($ids) {
+            if (is_array($ids)) {
+                return $count == count($ids);
+            } else {
+                return $count == 1;
+            }
+        }
+        return $count == count($this->season->members);
+    }
+
+    public function canPredict($ownerId = null) {
+        if (!$ownerId) {
+            $ownerId = auth()->user()->id;
+        }
+
+        $completed = CompletedPredictions::select('episodes.id as id')
+            ->join('episodes', 'episodes.id', '=', 'completed_predictions.episode_id')
+            ->where('completed_predictions.owner_id', '=', $ownerId)
+            ->where('episodes.episode', '<=', $this->episode)
+            ->where('episodes.season_id', '=', $this->season->id)
+            ->count();
+
+        if ($completed - $this->episode == -1) {
+            return true;
+        }
+        return false;
     }
 }

@@ -54,6 +54,10 @@ class Season extends Model
         return $this->belongsToMany(User::class, 'season_members')->withTimestamps();
     }
 
+    public function getMembers() {
+        return ($return = clone $this->members)->push($this->owner);
+    }
+
     public function getUserId() {
         return $this->owner->id;
     }

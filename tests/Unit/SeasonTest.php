@@ -47,4 +47,10 @@ class SeasonTest extends TestCase
 
         $this->assertTrue($season->members->contains($user));
     }
+
+    /** @test */
+    public function get_members_includes_owner() {
+        $season = SeasonFactory::create();
+        $this->assertTrue($season->getMembers()->contains($season->owner));
+    }
 }

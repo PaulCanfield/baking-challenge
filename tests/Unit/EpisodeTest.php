@@ -72,28 +72,26 @@ class EpisodeTest extends TestCase
 
     /** @test */
     public function eliminated_bakers_dont_appear_in_list_of_bakers() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(3)
             ->create();
 
         $episodes = [[
-                'episode' => 1,
-                'title' => 'Pastry Week'
-            ], [
-                'episode' => 2,
-                'title' => 'Bread Week'
-            ]];
+            'episode' => 1,
+            'title' => 'Pastry Week'
+        ], [
+            'episode' => 2,
+            'title' => 'Bread Week'
+        ]];
 
-        $episode = $season->addEpisode($episodes[0]);
-        $season->addEpisode($episodes[1]);
+        $firstEpisode  = $season->addEpisode($episodes[0]);
+        $secondEpisode = $season->addEpisode($episodes[1]);
 
-        $episode->addResult([
+        $firstEpisode->addResult([
             'baker_id'  => $season->bakers->first()->id,
-            'result_id' => factory(Result::class)->create()->id
+            'result_id' => factory(Result::class)->create(['eliminated' => 1])->id
         ]);
 
-        $this->assertCount(2, $episode->bakers());
+        $this->assertCount(2, $secondEpisode->activeBakers());
     }
 
     /** @test */
@@ -124,5 +122,40 @@ class EpisodeTest extends TestCase
             ->create();
 
         $this->assertTrue($season->episodes->first()->isCompleted());
+    }
+
+    /** @test */
+    public function a_user_can_only_predict_the_next_episode_after_a_completed_episode() {
+        $this->withoutExceptionHandling();
+
+        $season = SeasonFactory::withBakers(4)
+            ->withMembers(1)
+            ->withResults(2)
+            ->create();
+
+        $firstEpisode = factory(Episode::class)->create([
+            'season_id' => $season->id,
+            'episode'   => 1
+        ]);
+
+        $secondEpisode = factory(Episode::class)->create([
+            'season_id' => $season->id,
+            'episode'   => 2
+        ]);
+
+        $user = $this->signIn($season->members->first());
+
+        $this->assertTrue($firstEpisode->canPredict());
+        $this->assertFalse($secondEpisode->canPredict());
+
+        $firstEpisode->addPrediction([
+            'owner_id' => $user->id,
+            'result_id' => SeasonFactory::results()->first()->id,
+            'baker_id' => $season->bakers->first()->id
+        ]);
+        $firstEpisode->completePredictions();
+
+        $this->assertFalse($firstEpisode->canPredict());
+        $this->assertTrue($secondEpisode->canPredict());
     }
 }
