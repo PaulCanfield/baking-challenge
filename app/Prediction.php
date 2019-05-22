@@ -19,4 +19,8 @@ class Prediction extends Model
     public function baker() {
         return $this->belongsTo(Baker::class);
     }
+
+    public function episode() {
+        return $this->belongsTo(Episode::class);
+    }
 }

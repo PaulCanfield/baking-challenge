@@ -76,10 +76,8 @@ class EpisodeTest extends TestCase
             ->create();
 
         $episodes = [[
-            'episode' => 1,
             'title' => 'Pastry Week'
         ], [
-            'episode' => 2,
             'title' => 'Bread Week'
         ]];
 
@@ -113,6 +111,8 @@ class EpisodeTest extends TestCase
 
     /** @test */
     public function it_can_be_completed() {
+        $this->withoutExceptionHandling();
+
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(2)
             ->withMembers(2)
@@ -157,5 +157,44 @@ class EpisodeTest extends TestCase
 
         $this->assertFalse($firstEpisode->canPredict());
         $this->assertTrue($secondEpisode->canPredict());
+    }
+
+    /** @test */
+    public function it_can_be_finalized_and_unfinalized() {
+        $this->withoutExceptionHandling();
+
+        $season = SeasonFactory::withBakers(4)
+            ->withEpisodes(1)
+            ->withMembers(1)
+            ->withResults(2)
+            ->withEpisodeResults(2)
+            ->create();
+
+        $episode = $season->episodes->first();
+
+        $episode->finalize();
+
+        $this->assertTrue($episode->finalized);
+
+        $episode->unfinalize();
+
+        $this->assertFalse($episode->finalized);
+    }
+
+    /** @test */
+    public function episodes_are_created_in_sequential_order() {
+        $season = SeasonFactory::create();
+
+        $this->assertEquals(1, factory(Episode::class)->create([
+            'season_id' => $season
+        ])->episode);
+
+        $this->assertEquals(2, factory(Episode::class)->create([
+            'season_id' => $season
+        ])->episode);
+
+        $this->assertEquals(3, factory(Episode::class)->create([
+            'season_id' => $season
+        ])->episode);
     }
 }

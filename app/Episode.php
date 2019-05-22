@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Support\Collection;
+use mysql_xdevapi\Exception;
 
 class Episode extends SeasonObject
 {
@@ -60,9 +61,11 @@ class Episode extends SeasonObject
         ], $values));
     }
 
-    public function completePredictions($values = [ ]) {
+    public function completePredictions($ownerId = null) {
+        $ownerId = $ownerId ? $ownerId : auth()->user()->id;
+
         return $this->completedPredictions()->create([
-            'owner_id' => $values['owner_id'] ?? auth()->user()->id
+            'owner_id' => $ownerId
         ]);
     }
 
@@ -101,5 +104,21 @@ class Episode extends SeasonObject
             return true;
         }
         return false;
+    }
+
+    public function finalize() {
+        if (!$this->results) {
+            throw new Exception('Unable to finalize results of an episode when the episode has no results.');
+        }
+        $this->finalized = true;
+        $this->save();
+    }
+
+    public function unfinalize() {
+        if (!$this->finalized) {
+            throw new Exception('Unable to unfinalize results of an episode when unfinalized.');
+        }
+        $this->finalized = false;
+        $this->save();
     }
 }

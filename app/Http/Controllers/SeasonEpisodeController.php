@@ -11,13 +11,11 @@ class SeasonEpisodeController extends Controller
         $this->authorize('update', $season);
 
         request()->validate([
-            'title' => 'required',
-            'episode' => 'required|numeric|min:1'
+            'title' => 'required'
         ]);
 
         $season->addEpisode([
-            'title' => request('title'),
-            'episode' => request( 'episode')
+            'title' => request('title')
         ]);
 
         return redirect($season->path());
@@ -26,20 +24,17 @@ class SeasonEpisodeController extends Controller
     public function update(Episode $episode) {
         $this->authorize('update', $episode->season);
 
-        request()->validate([
-            'episode' => 'numeric|min:1'
+        $episode->update([
+            'title' => request('title')
         ]);
 
-        $update = [ ];
-        if (request()->has('title')) {
-            $update['title'] = request('title');
-        }
+        return redirect($episode->season->path());
+    }
 
-        if (request()->has('episode')) {
-            $update['episode'] = request('episode');
-        }
+    public function finalize(Episode $episode) {
+        $this->authorize('finalize', $episode);
 
-        $episode->update($update);
+        $episode->finalize();
 
         return redirect($episode->season->path());
     }

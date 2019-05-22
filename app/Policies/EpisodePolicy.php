@@ -94,7 +94,7 @@ class EpisodePolicy
             $check = false;
         }
 
-        if (!$episode->userPredictions()) {
+        if (!$episode->userPredictions()->count()) {
             $check = false;
         }
 
@@ -103,6 +103,17 @@ class EpisodePolicy
         }
 
         return $check;
+    }
+
+    public function finalize(User $user, Episode $episode) {
+        if (!$episode->results) {
+            return false;
+        }
+
+        if (!$user->is($episode->season->owner)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -117,6 +128,10 @@ class EpisodePolicy
 
     public function seeResults(User $user, Episode $episode) {
         return $episode->isCompleted($user->id);
+    }
+
+    public function deletePrediction(User $user, Episode $episode) {
+        return !$episode->isCompleted($user->id);
     }
 
     public function addResults(User $user, Episode $episode) {

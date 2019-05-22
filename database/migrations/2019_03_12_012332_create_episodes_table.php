@@ -18,6 +18,8 @@ class CreateEpisodesTable extends Migration
 
             $table->unsignedInteger('season_id');
             $table->unsignedInteger('episode');
+            $table->boolean('finalized')->default(false);
+
             $table->text('title');
 
             $table->timestamps();

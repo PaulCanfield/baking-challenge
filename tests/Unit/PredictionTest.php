@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Episode;
 use App\Result;
 use App\User;
 use Facades\Tests\Setup\SeasonFactory;
@@ -45,7 +46,7 @@ class PredictionTest extends TestCase
             ->create();
 
         $episode = $season->episodes->first();
-        $user = $episode->predictions->first()->owner;
+        $user    = $episode->predictions->first()->owner;
 
         $this->assertInstanceOf(
             Result::class,
@@ -53,5 +54,22 @@ class PredictionTest extends TestCase
                 ->first()
                 ->result
         );
+    }
+
+    /** @test */
+    function it_belongs_to_an_episode() {
+        $this->withoutExceptionHandling();
+
+        $season = SeasonFactory::withBakers(2)
+            ->withEpisodes(1)
+            ->withMembers(1)
+            ->withEpisodes(1)
+            ->withResults(1)
+            ->withPredictions(1)
+            ->create();
+
+        $prediction = $season->episodes->first()->predictions->first();
+
+        $this->assertInstanceOf(Episode::class, $prediction->episode);
     }
 }

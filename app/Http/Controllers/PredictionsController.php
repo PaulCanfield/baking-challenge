@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Episode;
 use App\Http\Requests\MakePredictionRequest;
+use App\Prediction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -22,5 +23,15 @@ class PredictionsController extends Controller
         $episode->completePredictions();
 
         return redirect($episode->season->path());
+    }
+
+    public function delete(Prediction $prediction) {
+        if (!Gate::allows('deletePrediction', $prediction->episode)) {
+            return response('Unauthorized', 403);
+        }
+
+        $prediction->delete();
+
+        return redirect($prediction->episode->season->path());
     }
 }

@@ -27,8 +27,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/result', 'ResultsController@create');
     Route::Post('/result', 'ResultsController@store');
 
+    Route::delete('/prediction/{prediction}/delete', 'PredictionsController@delete');
+
     Route::Post('/episode/{episode}/prediction', 'PredictionsController@store');
     Route::Post('/episode/{episode}/complete', 'PredictionsController@complete');
+    Route::Post('/episode/{episode}/finalize', 'SeasonEpisodeController@finalize');
+    Route::Post('/episode/{episode}/unfinalize', 'SeasonEpisodeController@unfinalize');
 
     Route::get('/home', 'HomeController@index')->name('home');
 });

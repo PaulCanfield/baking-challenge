@@ -96,8 +96,9 @@ class SeasonFactory
 
         factory(Baker::class, $this->bakerCount)->create($seasonId);
 
-        factory(Episode::class, $this->episodes['count'])
-            ->create(array_merge($seasonId, $this->episodes['options']));
+        factory(Episode::class, $this->episodes['count'])->create([
+            'season_id' => $season->id,
+        ]);
 
         factory(User::class, $this->members['count'])
             ->create()
@@ -150,7 +151,7 @@ class SeasonFactory
                             continue 2;
                         }
 
-                        $episode->completePredictions([ 'owner_id' => $member->id ]);
+                        $episode->completePredictions($member->id);
                     }
                 }
             }

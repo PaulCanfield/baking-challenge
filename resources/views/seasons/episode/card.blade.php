@@ -11,8 +11,18 @@
             @endif
             </h4>
             @foreach ($episode->userPredictions() as $result)
-                <div class="result ml-4">
-                    @includeFirst(["seasons.result._{$result->result->key}", 'seasons.result._default'], ['result' => $result])
+                <div class="flex items-center justify-between">
+                    <div class="result">
+                        @includeFirst(["seasons.result._{$result->result->key}", 'seasons.result._default'], ['result' => $result])
+                    </div>
+
+                    @can('complete', $episode)
+                        <form method="POST" action="/prediction/{{  $result->id }}/delete">
+                            @csrf
+                            @method("DELETE")
+                            <input type="submit" value="delete_outline" class="material-icons text-lg">
+                        </form>
+                    @endcan
                 </div>
             @endforeach
         </div>
@@ -27,8 +37,8 @@
     @can('complete', $episode)
         <form method="POST" class="border-2 border-grey-dark p-2 flex mb-2 items-center" action="{{ $episode->path() }}/complete">
             @csrf
-            <p class="italic text-red test-sm">Once you submit your predictions you can not change them.</p>
-            <input type="submit" class="button" value="Submit">
+            <p class="italic text-red test-sm">Once you complete your predictions you can not change them.</p>
+            <input type="submit" class="button" value="Complete">
         </form>
     @endcan
 

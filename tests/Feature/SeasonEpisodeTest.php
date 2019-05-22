@@ -73,11 +73,10 @@ class SeasonEpisodeTest extends TestCase
     public function an_episode_can_be_updated() {
         $this->withoutExceptionHandling();
 
-        $season = SeasonFactory::withEpisodes(1, ['episode' => 1])
+        $season = SeasonFactory::withEpisodes(1)
             ->create();
 
         $values = [
-            'episode' => '12',
             'title' => 'Changed Value'
         ];
 
@@ -106,21 +105,6 @@ class SeasonEpisodeTest extends TestCase
     }
 
     /** @test */
-    public function an_episode_episode_number_can_be_updated() {
-        $season = SeasonFactory::withEpisodes(1, ['episode' => 1])
-            ->create();
-
-        $values = [
-            'episode' => 12
-        ];
-
-        $this->actingAs($season->owner)
-            ->patch($season->episodes->first()->path(), $values);
-
-        $this->assertDatabaseHas('episodes', $values);
-    }
-
-    /** @test */
     public function an_episode_requires_a_title() {
         $season = SeasonFactory::create();
 
@@ -132,5 +116,28 @@ class SeasonEpisodeTest extends TestCase
         $this->actingAs($season->owner)
             ->post($season->path() .'/episode', $episode)
             ->assertSessionHasErrors('title');
+    }
+
+    /** @test */
+    public function the_owner_of_a_season_can_finalize_an_episode_with_results() {
+        $this->withoutExceptionHandling();
+
+        $season = SeasonFactory::withBakers(4)
+            ->withEpisodes(1)
+            ->withMembers(1)
+            ->withResults(2)
+            ->withEpisodeResults(2)
+            ->create();
+
+        $episode = $season->episodes->first();
+
+        $this->be($episode->season->owner)
+            ->post($episode->path().'/finalize');
+
+        $this->assertTrue((bool) $episode->refresh()->finalized);
+
+        $episode->unfinalize();
+
+        $this->assertFalse((bool) $episode->finalized);
     }
 }
