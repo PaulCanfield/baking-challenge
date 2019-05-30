@@ -18,7 +18,7 @@ class CreateSeasonsTable extends Migration
 
             $table->unsignedBigInteger('owner_id');
             $table->string('title', 100);
-            $table->string('note', 255)->nullable();
+            $table->text('note')->nullable();
             $table->unsignedInteger('year');
 
             $table->timestamps();

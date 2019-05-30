@@ -19,7 +19,6 @@ class ManagePredictionsTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = SeasonFactory::withBakers(2)
-            ->withMembers(1)
             ->withResults(2)
             ->create();
 
@@ -34,7 +33,7 @@ class ManagePredictionsTest extends TestCase
             'notes'     => 'This is the notes.'
         ];
 
-        $this->be($season->members()->first())
+        $this->be($season->allMembers->first())
             ->post($episode->path().'/prediction', $values);
 
         $this->assertDatabaseHas('predictions', $values);
@@ -44,7 +43,6 @@ class ManagePredictionsTest extends TestCase
     public function not_a_member_of_a_season_can_not_cast_predictions() {
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
-            ->withMembers(1)
             ->withResults(2)
             ->create();
 
@@ -59,7 +57,6 @@ class ManagePredictionsTest extends TestCase
 
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
-            ->withMembers(1)
             ->create();
 
         $this->be($this->signIn())
@@ -73,14 +70,14 @@ class ManagePredictionsTest extends TestCase
 
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
-            ->withMembers(2)
+            ->withAddtionalMembers(1)
             ->withResults(2)
             ->withPredictions(2)
             ->create();
 
         $episode = $season->episodes->first();
 
-        $this->be($user = $season->members->first())
+        $this->be($user = $season->allMembers->first())
             ->post($episode->path().'/complete');
 
         $this->assertDatabaseHas('completed_predictions', [
@@ -93,7 +90,7 @@ class ManagePredictionsTest extends TestCase
     public function a_member_of_a_season_can_not_add_predictions_to_a_completed_episode() {
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
-            ->withMembers(2)
+            ->withAddtionalMembers(1)
             ->withResults(2)
             ->withPredictions(2)
             ->withCompletedEpisodes()
@@ -105,7 +102,7 @@ class ManagePredictionsTest extends TestCase
             'notes'     => 'This is the notes.'
         ];
 
-        $this->be($season->members()->first())
+        $this->be($season->allMembers->first())
             ->post($season->episodes->first()->path().'/prediction', $values)
             ->assertStatus(403);
     }
@@ -116,13 +113,13 @@ class ManagePredictionsTest extends TestCase
 
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
-            ->withMembers(2)
+            ->withAddtionalMembers(1)
             ->withResults(2)
             ->withPredictions(2)
             ->create();
 
         $prediction = $season->episodes->first()
-                ->userPredictions($season->members->first()->id)
+                ->userPredictions($season->allMembers->first())
                 ->first();
 
         $this->be($prediction->owner)->delete('/prediction/'.$prediction->id.'/delete')
@@ -135,25 +132,50 @@ class ManagePredictionsTest extends TestCase
 
     /** @test */
     public function a_member_cannot_delete_their_completed_predictions() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
-            ->withMembers(2)
             ->withResults(2)
             ->withPredictions(2)
             ->create();
 
         $episode = tap($season->episodes->first())->completePredictions(
-            $season->members->first()->id
+            $season->allMembers->first()
         );
 
         $prediction = $episode->userPredictions(
-            $season->members->first()->id
+            $season->allMembers->first()
         )->first();
 
         $this->be($prediction->owner)
             ->delete('/prediction/'.$prediction->id.'/delete')
             ->assertStatus(403);
+    }
+
+    /** @test */
+    public function unauthorized_users_can_not_delete_predictions() {
+        $season = SeasonFactory::withBakers(2)
+            ->withEpisodes(1)
+            ->withAddtionalMembers(1)
+            ->withResults(2)
+            ->withPredictions(2)
+            ->create();
+
+        $episode = tap($season->episodes->first())->completePredictions(
+            $season->allMembers->first()
+        );
+
+        $prediction = $episode->userPredictions(
+            $season->allMembers->first()
+        )->first();
+
+        // Unauthorized User
+        $this->delete('/prediction/'.$prediction->id.'/delete')
+            ->assertRedirect('login');
+
+        // Authorized user
+        $this->be($season->allMembers->get(1))->delete('/prediction/'.$prediction->id.'/delete')
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('predictions', ['id' => $prediction->id ]);
     }
 }

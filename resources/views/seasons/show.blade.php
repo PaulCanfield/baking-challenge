@@ -23,21 +23,8 @@
     </header>
 
     <div class="flex">
-
         <div class="season-info w-3/4">
-            <div class="bakers card mb-2">
-                <h3>Bakers</h3>
-
-                @foreach ($season->bakers as $index => $baker)
-                    <div class="baker">
-                        <form method="POST" class="w-full" action="{{ $baker->path() }}">
-                            @csrf
-                            @method('PATCH')
-                            <input class="w-full" value="{{ $baker->name }}" name="name">
-                        </form>
-                    </div>
-                @endforeach
-            </div>
+            @include('seasons.scorecard.card')
 
             @foreach ($season->episodes as $index => $episode)
                 <div class="episode card mb-2">
@@ -60,6 +47,20 @@
 
         <div class="w-1/4 ml-4 sidebar">
             <div class="p-2 bg-white shadow rounded">
+                <h3>Bakers</h3>
+
+                @foreach ($season->bakers as $index => $baker)
+                    <div class="baker">
+                        <form method="POST" class="w-full" action="{{ $baker->path() }}">
+                            @csrf
+                            @method('PATCH')
+                            <input class="w-full" value="{{ $baker->name }}" name="name">
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="p-2 bg-white shadow rounded mt-2">
                 <h3 class="mt-0 pt-0">Activity</h3>
 
                 @include('seasons.activity.card')
@@ -75,7 +76,6 @@
 
             @can('manage', $season)
                 @include('seasons.result.card')
-
                 @include('seasons.invite')
             @endcan
 

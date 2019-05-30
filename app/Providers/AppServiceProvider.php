@@ -2,13 +2,12 @@
 
 namespace App\Providers;
 
-use App\Baker;
 use App\Episode;
-use App\Observers\BakerObserver;
 use App\Observers\EpisodeObserver;
+use App\Observers\ResultObserver;
+use App\Result;
 use Illuminate\Support\ServiceProvider;
-use App\Season;
-use App\Observers\SeasonObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot() {
         Episode::observe(EpisodeObserver::class);
+        Result::observe(ResultObserver::class);
     }
 }

@@ -8,3 +8,15 @@ $factory->define(App\Result::class, function (Faker $faker) {
         'eliminated' => false
     ];
 });
+
+$factory->state(App\Result::class, 'eliminated', [
+    'result'      => 'Eliminated',
+    'key'         => 'eliminated',
+    'eliminated'  => true
+]);
+
+$factory->state(App\Result::class, 'star baker', [
+    'result'      => 'Star Baker',
+    'key'         => 'star_baker',
+    'eliminated'  => false
+]);

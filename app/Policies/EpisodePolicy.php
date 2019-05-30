@@ -123,18 +123,22 @@ class EpisodePolicy
      */
     public function predict(User $user, Episode $episode)
     {
-        return ($episode->season->members->contains($user) || $user->is($episode->season->owner)) && $episode->canPredict($user->id);
+        return ($episode->season->allMembers->contains($user) && $episode->canPredict($user->id));
     }
 
     public function seeResults(User $user, Episode $episode) {
-        return $episode->isCompleted($user->id);
+        return $episode->isCompleted($user);
     }
 
     public function deletePrediction(User $user, Episode $episode) {
-        return !$episode->isCompleted($user->id);
+        if ($episode->isCompleted($user)) {
+            return false;
+        }
+
+        return $user->is(request()->prediction->owner);
     }
 
     public function addResults(User $user, Episode $episode) {
-        return $episode->isCompleted($user->id) && ($episode->season->members->contains($user) || $user->is($episode->season->owner));
+        return $episode->isCompleted($user) && ($episode->season->allMembers->contains($user));
     }
 }

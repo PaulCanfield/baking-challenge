@@ -28,7 +28,7 @@ class SeasonFactory
     public function withCompletedEpisodes($episodes = null, $members = null, $options = [ ]) {
         $this->completedPredictions = [
             'episodes'   => $episodes ?: $this->episodes['count'],
-            'members'    => $members ?: $this->members['count'],
+            'members'    => $members  ?: $this->members['count'],
             'options'    => $options
         ];
         return $this;
@@ -53,7 +53,7 @@ class SeasonFactory
         return $this;
     }
 
-    public function withMembers($count = 0, $options = [ ]) {
+    public function withAddtionalMembers($count = 0, $options = [ ]) {
         $this->members = [
             'count' => $count,
             'options' => $options
@@ -78,10 +78,10 @@ class SeasonFactory
 
     public function withPredictions($count = 0, $episodes = null, $members = null, $options = [ ]) {
         $this->predictions = [
-            'count' => $count ?: 0,
+            'count'    => $count    ?: 0,
             'episodes' => $episodes ?: $this->episodes['count'],
-            'members' => $members ?: $this->members['count'],
-            'options' => $options
+            'members'  => $members  ?: ( $this->members['count'] ? $this->members['count'] : 1 ),
+            'options'  => $options
         ];
 
         return $this;
@@ -125,7 +125,7 @@ class SeasonFactory
                     break;
                 }
 
-                foreach ($season->members as $memberIndex => $member) {
+                foreach ($season->allMembers as $memberIndex => $member) {
                     if ($memberIndex >= $this->predictions['members']) {
                         break;
                     }
@@ -146,12 +146,12 @@ class SeasonFactory
                         break;
                     }
 
-                    foreach ($season->members as $memberIndex => $member) {
+                    foreach ($season->getMembers() as $memberIndex => $member) {
                         if ($memberIndex > $this->completedPredictions['members']) {
                             continue 2;
                         }
 
-                        $episode->completePredictions($member->id);
+                        $episode->completePredictions($member);
                     }
                 }
             }

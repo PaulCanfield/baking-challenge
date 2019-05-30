@@ -2,12 +2,16 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Model;
+use Exception;
 use Illuminate\Support\Collection;
-use mysql_xdevapi\Exception;
 
 class Episode extends SeasonObject
 {
     use RecordActivity;
+
+    private $pointsBase = 10;
+    private $pointsBonus = 10;
 
     public function path() {
         return "/episode/{$this->id}";
@@ -41,9 +45,12 @@ class Episode extends SeasonObject
         return $this->hasMany(Prediction::class);
     }
 
-    public function userPredictions($userId = null) {
+    public function userPredictions($user = null) {
+        $user = $user ?: auth()->user();
+        $userId = is_object($user) ? $user->id : $user;
+
         return $this->predictions()
-            ->where('owner_id', '=', $userId ?: auth()->user()->id )
+            ->where('owner_id', '=', $userId)
             ->get();
     }
 
@@ -55,17 +62,27 @@ class Episode extends SeasonObject
         return $this->results()->create($values);
     }
 
+    public function addResults(array $values) {
+        foreach ($values as $index => $value) {
+            $this->addResult($value);
+        }
+    }
+
     public function addPrediction($values) {
         return $this->predictions()->create(array_merge([
             'owner_id' => $values['owner_id'] ?? auth()->user()->id
         ], $values));
     }
 
-    public function completePredictions($ownerId = null) {
-        $ownerId = $ownerId ? $ownerId : auth()->user()->id;
+    public function completePredictions($user = null) {
+        $user = $user ?: auth()->user();
+
+        if ($this->userPredictions($user->id)->count() == 0) {
+            return false;
+        }
 
         return $this->completedPredictions()->create([
-            'owner_id' => $ownerId
+            'owner_id' => $user->id
         ]);
     }
 
@@ -73,19 +90,26 @@ class Episode extends SeasonObject
         $query = $this->completedPredictions();
 
         if ($ids !== null) {
-            $query->whereIn('owner_id', (is_array($ids) ? $ids : [ $ids ]));
+            if ($ids instanceof Illuminate\Support\Collection) {
+                $include = $ids->pluck('id')->toArray();
+            } else {
+                if ($ids instanceof User) {
+                    $include = [ $ids->id ];
+                } else {
+                    $include = $ids;
+                }
+            }
+
+            $query->whereIn('owner_id', $include);
         }
 
         $count = $query->count();
 
-        if ($ids) {
-            if (is_array($ids)) {
-                return $count == count($ids);
-            } else {
-                return $count == 1;
-            }
+        if ($ids == null) {
+            return $count == count($this->season->getMembers());
         }
-        return $count == count($this->season->members);
+
+        return $count == 1;
     }
 
     public function canPredict($ownerId = null) {
@@ -106,6 +130,37 @@ class Episode extends SeasonObject
         return false;
     }
 
+    public function correctPredictionsCount($owner = null) {
+        $owner = $owner ?: auth()->user();
+        $ownerId = is_object($owner) ? $owner->id : $owner;
+
+        if (!$this->finalized) {
+            return false;
+        }
+
+        $where = [
+            [ 'completed_predictions.owner_id', '=', $ownerId ],
+            [ 'episodes.episode', '<=', $this->episode ],
+            [ 'episodes.season_id', '=', $this->season->id ],
+        ];
+
+        return CompletedPredictions::select('*')
+            ->join('episodes', 'episodes.id', '=', 'completed_predictions.episode_id')
+            ->join('predictions', 'episodes.id', '=', 'predictions.episode_id')
+            ->join('results', 'results.id', '=', 'predictions.result_id')
+            ->join('episode_results', function($join) {
+                $join->on(
+                    'episode_results.baker_id', '=', 'predictions.baker_id'
+                )->on(
+                    'episode_results.episode_id', '=', 'episodes.id'
+                )->on(
+                    'episode_results.result_id', '=', 'predictions.result_id'
+                );
+            })
+            ->where($where)
+            ->count();
+    }
+
     public function finalize() {
         if (!$this->results) {
             throw new Exception('Unable to finalize results of an episode when the episode has no results.');
@@ -120,5 +175,29 @@ class Episode extends SeasonObject
         }
         $this->finalized = false;
         $this->save();
+    }
+
+    public function bonus($user = null, $correctPredictions = null) {
+        $user = $user ?: auth()->user();
+        $correctPredictions = $correctPredictions ?: $this->correctPredictionsCount($user);
+        $count = $this->userPredictions($user)->count();
+
+        if ($count > 0 && $count == $correctPredictions) {
+            return $this->pointsBonus;
+        } else {
+            return 0;
+        }
+    }
+
+    public function userPoints($user = null) {
+        if (!$this->finalized) {
+            return false;
+        }
+
+        $user = $user ?: auth()->user();
+
+        $correctPredictions = $this->correctPredictionsCount($user);
+
+        return ($this->pointsBase * $correctPredictions) + $this->bonus($user, $correctPredictions);
     }
 }

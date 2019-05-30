@@ -1,10 +1,21 @@
-<h3>Episode: {{ $episode->episode }} - {{ $episode->title }}</h3>
+<div class="flex items-center">
+    <h3>Episode: {{ $episode->episode }} - {{ $episode->title }}</h3>
+
+    @can('seeResults', $episode)
+        @if($episode->results->count() && !$episode->finalized)
+            <form method="POST" action="{{ $episode->path() }}/finalize" class="ml-auto">
+                @csrf
+                <input type="submit" class="material-icons" type="image" value="lock" title="Finalize Results">
+            </form>
+        @endif
+    @endcan
+</div>
 
 <div class="results">
     @if($episode->userPredictions()->count())
         <div class="mb-2">
             <h4>Your Predictions
-            @if($episode->isCompleted(auth()->user()->id))
+            @if($episode->isCompleted(auth()->user()))
                 <span class="text-red italic text-sm">
                     -- submitted
                 </span>

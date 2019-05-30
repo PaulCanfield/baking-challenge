@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Baker;
 use App\EpisodeResults;
 use App\Result;
 use Facades\Tests\Setup\SeasonFactory;
@@ -18,14 +19,12 @@ class EpisodeTest extends TestCase
     /** @test */
     public function it_has_a_season() {
         $episode = factory(Episode::class)->create();
-
         $this->assertInstanceOf(Season::class, $episode->season);
     }
 
     /** @test */
     public function it_has_a_path() {
         $episode = factory(Episode::class)->create();
-
         $this->assertEquals('/episode/' . $episode->id, $episode->path());
     }
 
@@ -36,7 +35,6 @@ class EpisodeTest extends TestCase
             ->create();
 
         $episode = $season->episodes->first();
-
         $this->assertCount(3, $episode->bakers());
     }
 
@@ -98,7 +96,7 @@ class EpisodeTest extends TestCase
 
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
-            ->withMembers(2)
+            ->withAddtionalMembers(1)
             ->withResults(2)
             ->withPredictions(2)
             ->create();
@@ -114,14 +112,33 @@ class EpisodeTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = SeasonFactory::withBakers(2)
-            ->withEpisodes(2)
-            ->withMembers(2)
+            ->withEpisodes(1)
+            ->withAddtionalMembers(1)
             ->withResults(2)
             ->withPredictions(2)
-            ->withCompletedEpisodes()
             ->create();
 
-        $this->assertTrue($season->episodes->first()->isCompleted());
+        $user = $season->allMembers->first();
+
+        if (!$season->episodes->first()->completePredictions($user)) {
+            df('failed');
+        }
+
+        $this->assertTrue($season->episodes->first()->isCompleted($user));
+    }
+
+    /** @test */
+    public function it_can_only_be_completed_if_predictions_exist() {
+        $season = SeasonFactory::withBakers(2)
+            ->withEpisodes(1)
+            ->withResults(2)
+            ->create();
+
+        $season->episodes->first()->completePredictions(
+            $season->allMembers->first()
+        );
+
+        $this->assertFalse($season->episodes->first()->isCompleted());
     }
 
     /** @test */
@@ -129,7 +146,6 @@ class EpisodeTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = SeasonFactory::withBakers(4)
-            ->withMembers(1)
             ->withResults(2)
             ->create();
 
@@ -143,7 +159,7 @@ class EpisodeTest extends TestCase
             'episode'   => 2
         ]);
 
-        $user = $this->signIn($season->members->first());
+        $user = $this->signIn($season->allMembers->first());
 
         $this->assertTrue($firstEpisode->canPredict());
         $this->assertFalse($secondEpisode->canPredict());
@@ -165,7 +181,6 @@ class EpisodeTest extends TestCase
 
         $season = SeasonFactory::withBakers(4)
             ->withEpisodes(1)
-            ->withMembers(1)
             ->withResults(2)
             ->withEpisodeResults(2)
             ->create();
@@ -196,5 +211,101 @@ class EpisodeTest extends TestCase
         $this->assertEquals(3, factory(Episode::class)->create([
             'season_id' => $season
         ])->episode);
+    }
+
+    /** @test */
+    public function it_will_return_the_number_of_points_player_earned() {
+        $this->withoutExceptionHandling();
+
+        $episode   = factory(Episode::class)->states('hasResults', 'finalized')->create();
+        $user      = $episode->season->allMembers->first();
+
+        $starBakerResult     = Result::where('result', '=', 'Star Baker')->first();
+        $eliminatedResult    = Result::where('result', '=', 'Eliminated')->first();
+
+        $bakerJordi  = $episode->season->bakers->get(0);
+        $bakerRiker  = factory(Baker::class)->create([ 'season_id' => $episode->season->id ]);
+
+        // Correct Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerJordi->id,
+            'result_id'  => $starBakerResult->id
+        ]);
+
+        // Incorrect Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerRiker->id,
+            'result_id'  => $eliminatedResult->id
+        ]);
+
+        $this->assertEquals(0, $episode->userPoints($user));
+
+        $episode->completePredictions($user);
+
+        $this->assertEquals(10, $episode->userPoints($user));
+    }
+
+    /** @test */
+    public function it_will_add_a_bonus_if_all_predictions_are_correct() {
+        $this->withoutExceptionHandling();
+
+        $episode   = factory(Episode::class)->states('hasResults', 'finalized')->create();
+        $user      = $episode->season->allMembers->first();
+
+        $starBakerResult       = Result::where('result', '=', 'Star Baker')->first();
+        $eliminatedResult = Result::where('result', '=', 'Eliminated')->first();
+
+        $bakerJordi  = $episode->season->bakers->get(0);
+        $bakerPicard = $episode->season->bakers->get(1);
+
+        // Correct Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerJordi->id,
+            'result_id'  => $starBakerResult->id
+        ]);
+
+        // Incorrect Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerPicard->id,
+            'result_id'  => $eliminatedResult->id
+        ]);
+        $episode->completePredictions($user);
+
+        $this->assertEquals($episode->userPoints($user), 30);
+    }
+
+    /** @test */
+    public function un_finalized_episodes_will_not_return_points() {
+        $this->withoutExceptionHandling();
+
+        $episode   = factory(Episode::class)->state('hasResults')->create();
+        $user      = $episode->season->allMembers->first();
+
+        $starBakerResult       = Result::where('result', '=', 'Star Baker')->first();
+        $eliminatedResult      = Result::where('result', '=', 'Eliminated')->first();
+
+        $bakerJordi  = $episode->season->bakers->get(0);
+        $bakerPicard = $episode->season->bakers->get(1);
+
+        // Correct Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerJordi->id,
+            'result_id'  => $starBakerResult->id
+        ]);
+
+        // Correct Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerPicard->id,
+            'result_id'  => $eliminatedResult->id
+        ]);
+        $episode->completePredictions($user);
+
+        $this->assertFalse($episode->userPoints($user));
     }
 }

@@ -13,7 +13,6 @@
     </div>
 </div>
 
-
 <div class="field mb-2">
     <label for="eliminated" class="label font-bold">Eliminates Baker</label>
     <div class="control">

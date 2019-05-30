@@ -11,4 +11,5 @@ class Result extends Model
     public function __toString() {
         return $this->result;
     }
+
 }

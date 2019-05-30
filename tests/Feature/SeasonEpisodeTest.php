@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Facades\Tests\Setup\SeasonFactory;
-use App\Season;
 use App\Episode;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -124,7 +123,6 @@ class SeasonEpisodeTest extends TestCase
 
         $season = SeasonFactory::withBakers(4)
             ->withEpisodes(1)
-            ->withMembers(1)
             ->withResults(2)
             ->withEpisodeResults(2)
             ->create();
