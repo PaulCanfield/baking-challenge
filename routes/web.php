@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::Post('/episode/{episode}/complete', 'PredictionsController@complete');
     Route::Post('/episode/{episode}/finalize', 'SeasonEpisodeController@finalize');
     Route::Post('/episode/{episode}/unfinalize', 'SeasonEpisodeController@unfinalize');
+    Route::Post('/season/{season}/finalResult', 'FinalResultController@store');
+    Route::Post('/season/{season}/finalResult/finalize', 'FinalResultController@finalize');
 
     Route::get('/home', 'HomeController@index')->name('home');
 });

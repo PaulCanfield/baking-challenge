@@ -95,16 +95,16 @@ class EpisodeTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = SeasonFactory::withBakers(2)
-            ->withEpisodes(1)
+            ->withEpisodes(2)
             ->withAddtionalMembers(1)
             ->withResults(2)
             ->withPredictions(2)
             ->create();
 
-        $episode = $season->episodes->first();
+        $episode = $season->episodes->get(1);
         $owner = $episode->predictions->first()->owner;
 
-        $this->assertCount(2, $episode->userPredictions($owner->id));
+        $this->assertCount(2, $episode->userPredictions($owner));
     }
 
     /** @test */
@@ -112,19 +112,16 @@ class EpisodeTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = SeasonFactory::withBakers(2)
-            ->withEpisodes(1)
+            ->withEpisodes(2)
             ->withAddtionalMembers(1)
             ->withResults(2)
             ->withPredictions(2)
+            ->withCompletedPredictions(2)
             ->create();
 
         $user = $season->allMembers->first();
 
-        if (!$season->episodes->first()->completePredictions($user)) {
-            df('failed');
-        }
-
-        $this->assertTrue($season->episodes->first()->isCompleted($user));
+        $this->assertTrue($season->episodes->get(1)->isCompleted($user));
     }
 
     /** @test */
@@ -149,15 +146,12 @@ class EpisodeTest extends TestCase
             ->withResults(2)
             ->create();
 
-        $firstEpisode = factory(Episode::class)->create([
+        $episodes = factory(Episode::class, 3)->create([
             'season_id' => $season->id,
-            'episode'   => 1
         ]);
 
-        $secondEpisode = factory(Episode::class)->create([
-            'season_id' => $season->id,
-            'episode'   => 2
-        ]);
+        $firstEpisode = $episodes->get(1);
+        $secondEpisode = $episodes->get(2);
 
         $user = $this->signIn($season->allMembers->first());
 
@@ -217,7 +211,10 @@ class EpisodeTest extends TestCase
     public function it_will_return_the_number_of_points_player_earned() {
         $this->withoutExceptionHandling();
 
-        $episode   = factory(Episode::class)->states('hasResults', 'finalized')->create();
+        $firstEpisode   = factory(Episode::class)->create();
+        $episode        = factory(Episode::class)->states('hasResults', 'finalized')
+            ->create(['season_id' => $firstEpisode->season->id ]);
+
         $user      = $episode->season->allMembers->first();
 
         $starBakerResult     = Result::where('result', '=', 'Star Baker')->first();
@@ -225,6 +222,8 @@ class EpisodeTest extends TestCase
 
         $bakerJordi  = $episode->season->bakers->get(0);
         $bakerRiker  = factory(Baker::class)->create([ 'season_id' => $episode->season->id ]);
+
+        $this->assertEquals(0, $firstEpisode->userPoints($user));
 
         // Correct Prediction
         $episode->addPrediction([
@@ -251,8 +250,11 @@ class EpisodeTest extends TestCase
     public function it_will_add_a_bonus_if_all_predictions_are_correct() {
         $this->withoutExceptionHandling();
 
-        $episode   = factory(Episode::class)->states('hasResults', 'finalized')->create();
-        $user      = $episode->season->allMembers->first();
+        $firstEpisode = factory(Episode::class)->create();
+        $episode      = factory(Episode::class)->states('hasResults', 'finalized')
+            ->create([ 'season_id' => $firstEpisode->season->id ] );
+
+        $user         = $episode->season->allMembers->first();
 
         $starBakerResult       = Result::where('result', '=', 'Star Baker')->first();
         $eliminatedResult = Result::where('result', '=', 'Eliminated')->first();
@@ -307,5 +309,65 @@ class EpisodeTest extends TestCase
         $episode->completePredictions($user);
 
         $this->assertFalse($episode->userPoints($user));
+    }
+
+    /** @test */
+    public function correct_predictions_are_calculated_correctly() {
+        $this->withoutExceptionHandling();
+
+        $firstEpisode = factory(Episode::class)->create();
+        $episode   = factory(Episode::class)->states('hasResults', 'finalized')->create([
+            'season_id' => $firstEpisode->season->id
+        ]);
+        $user      = $episode->season->allMembers->first();
+
+        $starBakerResult       = Result::where('result', '=', 'Star Baker')->first();
+        $eliminatedResult      = Result::where('result', '=', 'Eliminated')->first();
+
+        $bakerJordi  = $episode->season->bakers->get(0);
+        $bakerPicard = $episode->season->bakers->get(1);
+
+        // Correct Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerJordi->id,
+            'result_id'  => $starBakerResult->id
+        ]);
+
+        // Correct Prediction
+        $episode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerPicard->id,
+            'result_id'  => $eliminatedResult->id
+        ]);
+        $episode->completePredictions($user);
+
+        $this->assertEquals(2, $episode->correctPredictionsCount($user));
+
+        $secondEpisode   = factory(Episode::class)->states('hasResults', 'finalized')->create([
+            'season_id' => $episode->season->id
+        ]);
+
+        $episode->season->load('bakers');
+        $bakerRiker = $episode->season->bakers->get(2);
+
+        $this->assertEquals( 0, $secondEpisode->correctPredictionsCount($user));
+
+        // Correct Prediction
+        $secondEpisode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerRiker->id,
+            'result_id'  => $starBakerResult->id
+        ]);
+
+        // Incorrect Prediction
+        $secondEpisode->addPrediction([
+            'owner_id'   => $user->id,
+            'baker_id'   => $bakerJordi->id,
+            'result_id'  => $eliminatedResult->id
+        ]);
+        $secondEpisode->completePredictions($user);
+
+        $this->assertEquals( 1, $secondEpisode->correctPredictionsCount($user));
     }
 }

@@ -25,7 +25,7 @@ class SeasonFactory
         return $this;
     }
 
-    public function withCompletedEpisodes($episodes = null, $members = null, $options = [ ]) {
+    public function withCompletedPredictions($episodes = null, $members = null, $options = [ ]) {
         $this->completedPredictions = [
             'episodes'   => $episodes ?: $this->episodes['count'],
             'members'    => $members  ?: $this->members['count'],
@@ -131,6 +131,10 @@ class SeasonFactory
                     }
 
                     for ($i = 0 ; $i < $this->predictions['count'] ; $i++) {
+                        if ($episode->episode == 1) {
+                            continue;
+                        }
+
                         $episode->addPrediction([
                             'owner_id' => $member->id,
                             'baker_id' => $season->bakers->random()->id,
@@ -146,7 +150,7 @@ class SeasonFactory
                         break;
                     }
 
-                    foreach ($season->getMembers() as $memberIndex => $member) {
+                    foreach ($season->allMembers as $memberIndex => $member) {
                         if ($memberIndex > $this->completedPredictions['members']) {
                             continue 2;
                         }

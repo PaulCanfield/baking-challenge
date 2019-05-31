@@ -7,7 +7,7 @@
         </div>
 
         <div class="flex items-center">
-            @foreach ($season->getMembers() as $index => $member)
+            @foreach ($season->members as $index => $member)
                 <a class="mr-2" style="height: 32px" title="{{ $member->name }}">
                     <img src="{{ gravatar_url($member->email) }}" alt="{{ $member->name }}" class="rounded-full shadow w-8" >
                 </a>
@@ -25,6 +25,8 @@
     <div class="flex">
         <div class="season-info w-3/4">
             @include('seasons.scorecard.card')
+
+            @include('seasons.finalResults.card')
 
             @foreach ($season->episodes as $index => $episode)
                 <div class="episode card mb-2">

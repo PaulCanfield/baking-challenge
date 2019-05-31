@@ -17,12 +17,12 @@ class PredictionTest extends TestCase
     /** @test */
     function a_prediction_has_an_owner() {
         $season = SeasonFactory::withBakers(2)
-            ->withEpisodes(1)
+            ->withEpisodes(2)
             ->withResults(1)
             ->withPredictions(1)
             ->create();
 
-        $episode = $season->episodes->first();
+        $episode = $season->episodes->get(1);
         $user    = $episode->predictions->first()->owner;
 
         $this->assertInstanceOf(
@@ -36,18 +36,17 @@ class PredictionTest extends TestCase
     /** @test */
     function it_has_a_result() {
         $season = SeasonFactory::withBakers(2)
-            ->withEpisodes(1)
-            ->withEpisodes(1)
+            ->withEpisodes(2)
             ->withResults(1)
             ->withPredictions(1)
             ->create();
 
-        $episode = $season->episodes->first();
+        $episode = $season->episodes->get(1);
         $user    = $episode->predictions->first()->owner;
 
         $this->assertInstanceOf(
             Result::class,
-            $episode->userPredictions($user->id)
+            $episode->userPredictions($user)
                 ->first()
                 ->result
         );
@@ -58,13 +57,12 @@ class PredictionTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = SeasonFactory::withBakers(2)
-            ->withEpisodes(1)
-            ->withEpisodes(1)
+            ->withEpisodes(2)
             ->withResults(1)
             ->withPredictions(1)
             ->create();
 
-        $prediction = $season->episodes->first()->predictions->first();
+        $prediction = $season->episodes->get(1)->predictions->first();
 
         $this->assertInstanceOf(Episode::class, $prediction->episode);
     }

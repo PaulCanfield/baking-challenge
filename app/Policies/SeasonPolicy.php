@@ -78,4 +78,32 @@ class SeasonPolicy
     public function forceDelete(User $user, Season $season) {
         //
     }
+
+    public function castFinalResult(User $user, Season $season) {
+        if ($season->allMembers->contains($user) == false) {
+            return false;
+        }
+
+        if ($season->finalPredictionsCount($user) < 3) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function finalizeFinalResults(User $user, Season $season) {
+        if ($season->allMembers->contains($user) == false) {
+            return false;
+        }
+
+        if ($season->finalResultsFinalized($user)) {
+            return false;
+        }
+
+        if ($season->finalPredictionsCount($user) == 3 && $season->predictedWinner($user)) {
+            return true;
+        }
+
+        return false;
+    }
 }

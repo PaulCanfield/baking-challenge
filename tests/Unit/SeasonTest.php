@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Baker;
+use App\Season;
 use App\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
@@ -52,5 +54,47 @@ class SeasonTest extends TestCase
     public function get_members_includes_owner() {
         $season = SeasonFactory::create();
         $this->assertTrue($season->getMembers()->contains($season->owner));
+    }
+
+    /** @test */
+    public function a_season_returns_final_predictions_by_user() {
+        $season = factory(\App\FinalResult::class)->create()->season;
+        $this->assertEquals(1, $season->finalPredictionsCount($season->allMembers->first()));
+    }
+
+    /** @test */
+    public function it_will_return_users_predicted_winner() {
+        $season = factory(\App\FinalResult::class)->create()->season;
+        $user = $season->allMembers->first();
+
+        factory(\App\FinalResult::class)->state('winner')->create([
+            'season_id' => $season->id,
+            'baker_id' => factory(Baker::class)->create([ 'season_id' => $season->id ])->id,
+            'owner_id' => $user->id
+         ]);
+
+        $finalResult = $season->predictedWinner($user);
+
+        $this->assertTrue($finalResult->winner ? true : false);
+    }
+
+    /** @test */
+    public function it_can_finalize_results() {
+        $season = factory(Season::class)->create();
+        $user = $season->allMembers->first();
+
+        factory(\App\FinalResult::class, 2)->create([
+            'season_id' => $season->id,
+            'owner_id' => $user->id
+        ]);
+
+        factory(\App\FinalResult::class)->state('winner')->create([
+            'season_id' => $season->id,
+            'owner_id' => $user->id
+        ]);
+
+        $season->finalizeFinalResults($user);
+
+        $this->assertTrue($season->finalizeFinalResults($user) ? true : false);
     }
 }

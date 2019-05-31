@@ -123,10 +123,18 @@ class EpisodePolicy
      */
     public function predict(User $user, Episode $episode)
     {
-        return ($episode->season->allMembers->contains($user) && $episode->canPredict($user->id));
+        if ($episode->episode == 1) {
+            return false;
+        }
+
+        return ($episode->season->allMembers->contains($user) && $episode->canPredict($user));
     }
 
     public function seeResults(User $user, Episode $episode) {
+        if ($episode->episode == 1) {
+            return true;
+        }
+
         return $episode->isCompleted($user);
     }
 
