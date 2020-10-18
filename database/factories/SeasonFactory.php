@@ -1,12 +1,32 @@
 <?php
+namespace Database\Factories;
 
-use Faker\Generator as Faker;
+use App\Season;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\User;
+use Illuminate\Support\Str;
 
-$factory->define(App\Season::class, function (Faker $faker) {
-    return [
-        'year'     => $faker->numberBetween(1900,(int) date('Y')),
-        'owner_id' => factory(App\User::class),
-        'title'    => $faker->sentence,
-        'note'     => $faker->paragraph
-    ];
-});
+class SeasonFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Season::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'year'     => $this->faker->numberBetween(1900,(int) date('Y')),
+            'owner_id' => User::factory()->create(),
+            'title'    => $this->faker->sentence,
+            'note'     => $this->faker->paragraph
+        ];
+    }
+}

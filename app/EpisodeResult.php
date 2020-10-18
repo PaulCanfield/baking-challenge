@@ -2,10 +2,13 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EpisodeResults extends Model
+class EpisodeResult extends Model
 {
+    use HasFactory;
+
     protected $guarded = [ ];
 
     public function result() {

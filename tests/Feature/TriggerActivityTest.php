@@ -82,7 +82,7 @@ class TriggerActivityTest extends TestCase
     function add_a_new_episode() {
         $season = SeasonFactory::create();
 
-        $values = factory(Episode::class)->raw(['season_id' => $season->id]);
+        $values = Episode::factory()->raw(['season_id' => $season->id]);
 
         $season->addEpisode($values);
 
@@ -116,7 +116,6 @@ class TriggerActivityTest extends TestCase
         $season = SeasonFactory::withBakers(1)->create();
 
         $season->bakers[0]->delete();
-
         $this->assertCount(3, $season->activities);
     }
 
@@ -125,7 +124,7 @@ class TriggerActivityTest extends TestCase
         $this->withoutExceptionHandling();
 
         $season = tap(SeasonFactory::create())->invite(
-            $maurice = factory(User::class)->create()
+            $maurice = User::factory()->create()
         );
 
         $this->assertCount(2, $season->activities);

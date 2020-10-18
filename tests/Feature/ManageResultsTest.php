@@ -18,7 +18,7 @@ class ManageResultsTest extends TestCase
             ->ownedBy($user = $this->signIn())
             ->create();
 
-        $values = factory(Result::class)->raw();
+        $values = Result::factory()->raw();
 
         Session::put('requestReferrer', $season->path());
 
@@ -42,11 +42,7 @@ class ManageResultsTest extends TestCase
 
     /** @test */
     public function when_an_owner_of_a_season_creates_a_result_eliminated_is_not_required() {
-        $this->withoutExceptionHandling();
-
-        $values = [
-            'result' => 'Some Result'
-        ];
+        $values = ['result' => 'Some Result'];
 
         Session::put('requestReferrer', '/');
 

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Exception;
 use Illuminate\Support\Collection;
 
@@ -38,7 +37,7 @@ class Episode extends SeasonObject
     }
 
     public function results() {
-        return $this->hasMany(EpisodeResults::class);
+        return $this->hasMany(EpisodeResult::class);
     }
 
     public function predictions() {

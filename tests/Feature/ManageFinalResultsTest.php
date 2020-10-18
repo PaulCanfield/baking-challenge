@@ -37,9 +37,9 @@ class ManageFinalResultsTest extends TestCase
     public function only_a_member_of_a_season_can_add_final_results() {
         $season = SeasonFactory::withBakers(3)->create();
 
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $values = factory(FinalResult::class)->raw([
+        $values = FinalResult::factory()->raw([
             'baker_id'  => $season->bakers->first()->id,
             'winner'    => true
         ]);
@@ -58,9 +58,9 @@ class ManageFinalResultsTest extends TestCase
 
     /** @test */
     public function authenticated_user_with_three_predictions_can_finalize_results() {
-        $season = factory(Season::class)->create();
+        $season = Season::factory()->create();
 
-        $bakers = factory(Baker::class, 3)->create([ 'season_id' => $season->id ]);
+        $bakers = Baker::factory()->count(3)->create([ 'season_id' => $season->id ]);
 
         $user = $season->allMembers->first();
 

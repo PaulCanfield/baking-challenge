@@ -5,9 +5,9 @@ namespace Tests\Unit;
 use App\Baker;
 use App\Season;
 use App\User;
+use App\FinalResult;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SeasonTest extends TestCase
@@ -17,7 +17,7 @@ class SeasonTest extends TestCase
     /** @test */
 
     public function it_has_a_path() {
-        $season = factory('App\Season')->create();
+        $season = Season::factory()->create();
 
         $this->assertEquals('/season/'.$season->id, $season->path());
     }
@@ -25,7 +25,7 @@ class SeasonTest extends TestCase
     /** @test */
 
     public function it_belongs_to_an_owner() {
-        $season = factory('App\Season')->create();
+        $season = Season::factory()->create();
 
         $this->assertInstanceOf('App\User', $season->owner);
     }
@@ -33,9 +33,9 @@ class SeasonTest extends TestCase
     /** @test */
 
     public function it_can_add_bakers() {
-        $season = factory('App\Season')->create();
+        $season = Season::factory()->create();
 
-        $baker = $season->addBaker(factory('App\Baker')->raw());
+        $baker = $season->addBaker(Baker::factory()->raw());
 
         $this->assertCount(1, $season->bakers);
         $this->assertTrue($season->bakers->contains($baker));
@@ -45,7 +45,7 @@ class SeasonTest extends TestCase
     public function it_can_invite_users() {
         $season = SeasonFactory::create();
 
-        $season->invite($user = factory(User::class)->create());
+        $season->invite($user = User::factory()->create());
 
         $this->assertTrue($season->members->contains($user));
     }
@@ -58,18 +58,18 @@ class SeasonTest extends TestCase
 
     /** @test */
     public function a_season_returns_final_predictions_by_user() {
-        $season = factory(\App\FinalResult::class)->create()->season;
+        $season = FinalResult::factory()->create()->season;
         $this->assertEquals(1, $season->finalPredictionsCount($season->allMembers->first()));
     }
 
     /** @test */
     public function it_will_return_users_predicted_winner() {
-        $season = factory(\App\FinalResult::class)->create()->season;
+        $season = FinalResult::factory()->create()->season;
         $user = $season->allMembers->first();
 
-        factory(\App\FinalResult::class)->state('winner')->create([
+        FinalResult::factory()->winner()->create([
             'season_id' => $season->id,
-            'baker_id' => factory(Baker::class)->create([ 'season_id' => $season->id ])->id,
+            'baker_id' => Baker::factory()->create([ 'season_id' => $season->id ])->id,
             'owner_id' => $user->id
          ]);
 
@@ -80,15 +80,15 @@ class SeasonTest extends TestCase
 
     /** @test */
     public function it_can_finalize_results() {
-        $season = factory(Season::class)->create();
+        $season = Season::factory()->create();
         $user = $season->allMembers->first();
 
-        factory(\App\FinalResult::class, 2)->create([
+        FinalResult::factory()->count( 2)->create([
             'season_id' => $season->id,
             'owner_id' => $user->id
         ]);
 
-        factory(\App\FinalResult::class)->state('winner')->create([
+        FinalResult::factory()->winner()->create([
             'season_id' => $season->id,
             'owner_id' => $user->id
         ]);

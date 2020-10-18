@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Facades\Tests\Setup\SeasonFactory;
 use App\Episode;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Season;
 
 class SeasonEpisodeTest extends TestCase
 {
@@ -14,7 +14,7 @@ class SeasonEpisodeTest extends TestCase
 
     /** @test */
     public function guests_cannot_add_episodes_to_season() {
-        $this->post(factory('App\Season')->create()->path() .'/episode')
+        $this->post(Season::factory()->create()->path() .'/episode')
             ->assertRedirect('login');
     }
 
@@ -22,7 +22,7 @@ class SeasonEpisodeTest extends TestCase
     public function only_owner_of_a_season_can_add_an_episode() {
         $season = SeasonFactory::create();
 
-        $episode = factory(Episode::class)->raw();
+        $episode = Episode::factory()->raw();
 
         $this->actingAs($this->signIn())
             ->post($season->path() .'/episode', $episode)
@@ -55,7 +55,7 @@ class SeasonEpisodeTest extends TestCase
         $season = SeasonFactory::withEpisodes(1, ['episode' => 1])
             ->create();
 
-        $episode = factory(Episode::class)->make([
+        $episode = Episode::factory()->make([
             'season_id' => $season->id
         ]);
 
@@ -107,7 +107,7 @@ class SeasonEpisodeTest extends TestCase
     public function an_episode_requires_a_title() {
         $season = SeasonFactory::create();
 
-        $episode = factory(Episode::class)->raw([
+        $episode = Episode::factory()->raw([
             'season_id' => $season->id,
             'title' => ''
         ]);

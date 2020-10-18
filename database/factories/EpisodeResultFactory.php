@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Season;
+use App\EpisodeResult;
+use App\Result;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Baker;
 
-class BakerFactory extends Factory
+class EpisodeResultFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Baker::class;
+    protected $model = EpisodeResult::class;
 
     /**
      * Define the model's default state.
@@ -23,8 +23,8 @@ class BakerFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'season_id' => Season::factory()->create()
+            'result_id'  => Result::factory(),
+            'notes'      => $this->faker->paragraph
         ];
     }
 }

@@ -6,7 +6,6 @@ use App\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
@@ -15,8 +14,7 @@ class UserTest extends TestCase
 
     /** @test */
     public function has_seasons() {
-        $user = factory(User::class)->create();
-
+        $user = User::factory()->create();
         $this->assertInstanceOf(Collection::class, $user->seasons);
     }
 
@@ -26,20 +24,16 @@ class UserTest extends TestCase
             $maurice = $this->signIn()
         )->create();
 
-        $this->assertCount(1, $maurice->joinedSeasons());
-
         $season = tap(
             SeasonFactory::ownedBy(
-                factory(User::class)->create()
+                User::factory()->create()
             )->create()
         )->invite(
-            factory(User::class)->create()
+            User::factory()->create()
         );
 
         $this->assertCount(1, $maurice->joinedSeasons());
-
         $season->invite($maurice);
-
         $this->assertCount(2, $maurice->joinedSeasons());
     }
 }

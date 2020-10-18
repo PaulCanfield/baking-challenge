@@ -16,13 +16,11 @@ class ManagePredictionsTest extends TestCase
 
     /** @test */
     public function a_member_of_a_season_can_cast_a_prediction() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(2)
             ->withResults(2)
             ->create();
 
-        $episode = factory(Episode::class, 2)->create([
+        $episode = Episode::factory()->count(2)->create([
            'season_id' => $season->id
         ])->get(1);
 
@@ -45,15 +43,13 @@ class ManagePredictionsTest extends TestCase
             ->withResults(2)
             ->create();
 
-        $this->be(factory(User::class)->create())
+        $this->be(User::factory()->create())
             ->post($season->episodes->first()->path().'/prediction')
             ->assertStatus(403);
     }
 
     /** @test */
     public function a_user_can_not_complete_predictions_when_they_have_not_made_any() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(1)
             ->create();
@@ -65,8 +61,6 @@ class ManagePredictionsTest extends TestCase
 
     /** @test */
     public function a_user_can_complete_their_predictions() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(2)
             ->withAddtionalMembers(1)

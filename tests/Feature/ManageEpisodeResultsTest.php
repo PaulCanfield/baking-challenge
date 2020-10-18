@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\EpisodeResults;
+use App\EpisodeResult;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,11 +21,11 @@ class ManageEpisodeResultsTest extends TestCase
             ->withEpisodes(1)
             ->create();
 
-        $result = factory(Result::class)->create();
+        $result = Result::factory()->create();
 
         $episode = $season->episodes->first();
 
-        $values = factory(EpisodeResults::class)->raw([
+        $values = EpisodeResult::factory()->raw([
             'baker_id' => $episode->bakers()->random()->id,
             'result_id' => $result->id,
         ]);
