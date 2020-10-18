@@ -1,44 +1,70 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
+use App\Episode;
 use App\Season;
+use App\Result;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\EpisodeResult;
+use App\Baker;
+use Illuminate\Support\Str;
 
-$factory->define(App\Episode::class, function (Faker $faker) {
-    return [
-        'title'     => $faker->sentence,
-        'season_id' => factory(Season::class)
-    ];
-});
+class EpisodeFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Episode::class;
 
-$factory->state(App\Episode::class, 'hasResults', [ ]);
-$factory->state(App\Episode::class, 'finalized',  [ ]);
-
-$factory->afterCreatingState(App\Episode::class, 'hasResults', function ($episode, $faker) {
-    $starBaker = App\Result::where('result', '=', 'Star Baker')->get()->first();
-    if (!$starBaker) {
-        $starBaker = factory(App\Result::class)->state('star baker')->create();
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'title'     => $this->faker->sentence,
+            'season_id' => Season::factory()->create()
+        ];
     }
 
-    $eliminated = App\Result::where('result', '=', 'Eliminated')->get()->first();
-    if (!$eliminated) {
-        $eliminated = factory(App\Result::class)->state('eliminated')->create();
+    public function hasResults() {
+        return $this->afterCreating(function (Episode $episode) {
+            $starBaker = Result::where('result', '=', 'Star Baker')->get()->first();
+
+            if (!$starBaker) {
+                $starBaker = Result::factory()->starBaker()->create();
+            }
+
+            $eliminated = Result::where('result', '=', 'Eliminated')->get()->first();
+            if (!$eliminated) {
+                $eliminated = Result::factory()->eliminated()->create();
+            }
+
+            $bakers = Baker::factory()->count(2)->create([ 'season_id' => $episode->season->id ]);
+
+            EpisodeResult::factory()->create([
+                'episode_id'   => $episode->id,
+                'baker_id'     => $bakers->get(0)->id,
+                'result_id'    => $starBaker->id
+            ]);
+
+            EpisodeResult::factory()->create([
+                'episode_id'   => $episode->id,
+                'baker_id'     => $bakers->get(1)->id,
+                'result_id'    => $eliminated->id
+            ]);
+
+        });
     }
 
-    $bakers = factory(App\Baker::class, 2)->create([ 'season_id' => $episode->season->id ]);
-
-    factory(App\EpisodeResults::class)->create([
-        'episode_id'   => $episode->id,
-        'baker_id'     => $bakers->get(0)->id,
-        'result_id'    => $starBaker->id
-    ]);
-
-    factory(App\EpisodeResults::class)->create([
-        'episode_id'   => $episode->id,
-        'baker_id'     => $bakers->get(1)->id,
-        'result_id'    => $eliminated->id
-    ]);
-});
-
-$factory->afterCreatingState(App\Episode::class, 'finalized', function ($episode, $faker) {
-    $episode->finalize();
-});
+    public function finalized() {
+        return $this->afterCreating(function(Episode $episode) {
+            $episode->finalize();
+        });
+    }
+}

@@ -3,7 +3,7 @@
 namespace Tests\Setup;
 
 use App\Episode;
-use App\EpisodeResults;
+use App\EpisodeResult;
 use App\Result;
 use App\Season;
 use App\Baker;
@@ -72,7 +72,7 @@ class SeasonFactory
     }
 
     public function withResults($count = 0, $options = [ ]) {
-        $this->results = factory(Result::class, $count)->create($options);
+        $this->results = Result::factory()->count($count)->create($options);
         return $this;
     }
 
@@ -88,19 +88,18 @@ class SeasonFactory
     }
 
     public function create( ) {
-        $season = factory(Season::class)->create([
-            'owner_id' => $this->user ?? factory(User::class)
+        $season = Season::factory()->create([
+            'owner_id' => $this->user ?? User::factory()->create()
         ]);
 
         $seasonId = [ 'season_id' => $season->id ];
 
-        factory(Baker::class, $this->bakerCount)->create($seasonId);
-
-        factory(Episode::class, $this->episodes['count'])->create([
-            'season_id' => $season->id,
+        Baker::factory()->count($this->bakerCount)->create($seasonId);
+        Episode::factory()->count($this->episodes['count'])->create([
+            'season_id' => $season->id
         ]);
 
-        factory(User::class, $this->members['count'])
+        User::factory()->count($this->members['count'])
             ->create()
             ->each(function ($user) use ($season) {
                 $season->members()->attach($user);
@@ -112,9 +111,9 @@ class SeasonFactory
             }
 
             $this->results->each(function () use ($episode) {
-                factory(EpisodeResults::class)->create([
-                    'episode_id' => $episode->id,
-                    'baker_id' => $episode->season->bakers->random()->id
+                EpisodeResult::factory()->create([
+                        'episode_id' => $episode->id,
+                        'baker_id' => $episode->season->bakers->random()->id
                 ]);
             });
         }

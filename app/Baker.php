@@ -2,9 +2,12 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class Baker extends SeasonObject
 {
     use RecordActivity;
+    use HasFactory;
 
     public function path() {
         return '/baker/'. $this->id;
@@ -24,6 +27,6 @@ class Baker extends SeasonObject
     }
 
     public function episodeResults() {
-        return $this->hasMany(EpisodeResults::class);
+        return $this->hasMany(EpisodeResult::class);
     }
 }

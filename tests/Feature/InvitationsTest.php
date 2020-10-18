@@ -35,7 +35,7 @@ class InvitationsTest extends TestCase
         $this->withoutExceptionHandling();
         $season = SeasonFactory::create();
 
-        $james = factory(User::class)->create();
+        $james = User::factory()->create();
 
         $this->actingAs($season->owner)
             ->post($season->path().'/invite', [
@@ -64,7 +64,7 @@ class InvitationsTest extends TestCase
     /** @test */
     public function an_invited_user_can_add_bakers() {
         $season = SeasonFactory::ownedBy(
-            $user = factory(User::class)->create()
+            $user = User::factory()->create()
         )->create();
 
         $season->invite($user);

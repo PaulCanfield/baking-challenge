@@ -16,7 +16,7 @@ class SeasonBakersTest extends TestCase
 
     /** @test */
     public function guests_cannot_add_bakers_to_seasons() {
-        $this->post(factory('App\Season')->create()->path() .'/baker')
+        $this->post(Season::factory()->create()->path() .'/baker')
             ->assertRedirect('login');
     }
 
@@ -24,9 +24,9 @@ class SeasonBakersTest extends TestCase
     public function only_owner_of_a_season_can_add_a_baker() {
         $season = SeasonFactory::create();
 
-        $baker = factory(Baker::class)->raw();
+        $baker = Baker::factory()->raw();
 
-        $this->be(factory(User::class)->create())
+        $this->be(User::factory()->create())
             ->post($season->path() .'/baker', $baker)
             ->assertStatus(403);
 
@@ -49,18 +49,19 @@ class SeasonBakersTest extends TestCase
 
     /** @test */
     public function a_season_can_have_bakers() {
+        $this->withoutExceptionHandling();
         $this->signIn();
 
         $season = auth()->user()->seasons()->create(
-            factory(Season::class)->raw()
+            Season::factory()->raw()
         );
 
-        $baker = factory(Baker::class)->make(['name' => "Chet O'Connle"]);
+        $baker = Baker::factory()->make(['name' => "Chet O'Connle", 'season_id' => null]);
 
         $this->post($season->path() . '/baker', $baker->toArray());
 
         $this->get($season->path())
-            ->assertSee(e($baker->name));
+            ->assertSee($baker->name);
     }
 
     /** @test */
@@ -81,7 +82,7 @@ class SeasonBakersTest extends TestCase
     public function a_baker_requires_a_name() {
         $season = SeasonFactory::create();
 
-        $baker = factory(Baker::class)->raw( [ 'name' => '' ] );
+        $baker = Baker::factory()->raw( [ 'name' => '' ] );
 
         $this->be($season->owner)
             ->post( $season->path() . '/baker', $baker)

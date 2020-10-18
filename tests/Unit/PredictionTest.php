@@ -7,7 +7,6 @@ use App\Result;
 use App\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PredictionTest extends TestCase

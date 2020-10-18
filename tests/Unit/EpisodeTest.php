@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Baker;
-use App\EpisodeResults;
+use App\EpisodeResult;
 use App\Result;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
@@ -18,13 +18,13 @@ class EpisodeTest extends TestCase
 
     /** @test */
     public function it_has_a_season() {
-        $episode = factory(Episode::class)->create();
+        $episode = Episode::factory()->create();
         $this->assertInstanceOf(Season::class, $episode->season);
     }
 
     /** @test */
     public function it_has_a_path() {
-        $episode = factory(Episode::class)->create();
+        $episode = Episode::factory()->create();
         $this->assertEquals('/episode/' . $episode->id, $episode->path());
     }
 
@@ -57,11 +57,11 @@ class EpisodeTest extends TestCase
 
         $episode = $season->episodes->first();
 
-        $episode->addResult(factory(EpisodeResults::class)->raw([
+        $episode->addResult(EpisodeResult::factory()->raw([
             'baker_id' => $episode->bakers()->first()->id
         ]));
 
-        $episode->addResult(factory(EpisodeResults::class)->raw([
+        $episode->addResult(EpisodeResult::factory()->raw([
             'baker_id' => $episode->bakers()->first()->id
         ]));
 
@@ -84,7 +84,7 @@ class EpisodeTest extends TestCase
 
         $firstEpisode->addResult([
             'baker_id'  => $season->bakers->first()->id,
-            'result_id' => factory(Result::class)->create(['eliminated' => 1])->id
+            'result_id' => Result::factory()->create(['eliminated' => 1])->id
         ]);
 
         $this->assertCount(2, $secondEpisode->activeBakers());
@@ -92,8 +92,6 @@ class EpisodeTest extends TestCase
 
     /** @test */
     public function only_user_predictions_appear_in_user_predictions() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(2)
             ->withAddtionalMembers(1)
@@ -109,8 +107,6 @@ class EpisodeTest extends TestCase
 
     /** @test */
     public function it_can_be_completed() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(2)
             ->withEpisodes(2)
             ->withAddtionalMembers(1)
@@ -140,13 +136,11 @@ class EpisodeTest extends TestCase
 
     /** @test */
     public function a_user_can_only_predict_the_next_episode_after_a_completed_episode() {
-        $this->withoutExceptionHandling();
-
         $season = SeasonFactory::withBakers(4)
             ->withResults(2)
             ->create();
 
-        $episodes = factory(Episode::class, 3)->create([
+        $episodes = Episode::factory()->count(3)->create([
             'season_id' => $season->id,
         ]);
 
@@ -194,15 +188,15 @@ class EpisodeTest extends TestCase
     public function episodes_are_created_in_sequential_order() {
         $season = SeasonFactory::create();
 
-        $this->assertEquals(1, factory(Episode::class)->create([
+        $this->assertEquals(1, Episode::factory()->create([
             'season_id' => $season
         ])->episode);
 
-        $this->assertEquals(2, factory(Episode::class)->create([
+        $this->assertEquals(2, Episode::factory()->create([
             'season_id' => $season
         ])->episode);
 
-        $this->assertEquals(3, factory(Episode::class)->create([
+        $this->assertEquals(3, Episode::factory()->create([
             'season_id' => $season
         ])->episode);
     }
@@ -211,9 +205,11 @@ class EpisodeTest extends TestCase
     public function it_will_return_the_number_of_points_player_earned() {
         $this->withoutExceptionHandling();
 
-        $firstEpisode   = factory(Episode::class)->create();
-        $episode        = factory(Episode::class)->states('hasResults', 'finalized')
-            ->create(['season_id' => $firstEpisode->season->id ]);
+        $firstEpisode   = Episode::factory()->create();
+        $episode        = Episode::factory()->hasResults()->finalized()
+            ->create([
+                'season_id' => $firstEpisode->season->id
+            ]);
 
         $user      = $episode->season->allMembers->first();
 
@@ -221,7 +217,7 @@ class EpisodeTest extends TestCase
         $eliminatedResult    = Result::where('result', '=', 'Eliminated')->first();
 
         $bakerJordi  = $episode->season->bakers->get(0);
-        $bakerRiker  = factory(Baker::class)->create([ 'season_id' => $episode->season->id ]);
+        $bakerRiker  = Baker::factory()->create([ 'season_id' => $episode->season->id ]);
 
         $this->assertEquals(0, $firstEpisode->userPoints($user));
 
@@ -250,14 +246,14 @@ class EpisodeTest extends TestCase
     public function it_will_add_a_bonus_if_all_predictions_are_correct() {
         $this->withoutExceptionHandling();
 
-        $firstEpisode = factory(Episode::class)->create();
-        $episode      = factory(Episode::class)->states('hasResults', 'finalized')
-            ->create([ 'season_id' => $firstEpisode->season->id ] );
+        $firstEpisode = Episode::factory()->create();
+        $episode      = Episode::factory()->hasResults()->finalized()
+            ->create([ 'season_id' => $firstEpisode->season->id ]);
 
         $user         = $episode->season->allMembers->first();
 
         $starBakerResult       = Result::where('result', '=', 'Star Baker')->first();
-        $eliminatedResult = Result::where('result', '=', 'Eliminated')->first();
+        $eliminatedResult      = Result::where('result', '=', 'Eliminated')->first();
 
         $bakerJordi  = $episode->season->bakers->get(0);
         $bakerPicard = $episode->season->bakers->get(1);
@@ -284,7 +280,7 @@ class EpisodeTest extends TestCase
     public function un_finalized_episodes_will_not_return_points() {
         $this->withoutExceptionHandling();
 
-        $episode   = factory(Episode::class)->state('hasResults')->create();
+        $episode   = Episode::factory()->hasResults()->create();
         $user      = $episode->season->allMembers->first();
 
         $starBakerResult       = Result::where('result', '=', 'Star Baker')->first();
@@ -315,8 +311,8 @@ class EpisodeTest extends TestCase
     public function correct_predictions_are_calculated_correctly() {
         $this->withoutExceptionHandling();
 
-        $firstEpisode = factory(Episode::class)->create();
-        $episode   = factory(Episode::class)->states('hasResults', 'finalized')->create([
+        $firstEpisode = Episode::factory()->create();
+        $episode      = Episode::factory()->hasResults()->finalized()->create([
             'season_id' => $firstEpisode->season->id
         ]);
         $user      = $episode->season->allMembers->first();
@@ -344,7 +340,7 @@ class EpisodeTest extends TestCase
 
         $this->assertEquals(2, $episode->correctPredictionsCount($user));
 
-        $secondEpisode   = factory(Episode::class)->states('hasResults', 'finalized')->create([
+        $secondEpisode   = Episode::factory()->hasResults()->finalized()->create([
             'season_id' => $episode->season->id
         ]);
 
