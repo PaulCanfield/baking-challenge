@@ -2,12 +2,12 @@
 
 namespace Tests\Setup;
 
-use App\Episode;
-use App\EpisodeResult;
-use App\Result;
-use App\Season;
-use App\Baker;
-use App\User;
+use App\Models\Episode;
+use App\Models\EpisodeResult;
+use App\Models\Result;
+use App\Models\Season;
+use App\Models\Baker;
+use App\Models\User;
 
 class SeasonFactory
 {

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\User;
+use App\Models\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection;

@@ -1,9 +1,9 @@
 <?php
 namespace Database\Factories;
 
-use App\FinalResult;
-use App\Season;
-use App\Baker;
+use App\Models\FinalResult;
+use App\Models\Season;
+use App\Models\Baker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FinalResultFactory extends Factory

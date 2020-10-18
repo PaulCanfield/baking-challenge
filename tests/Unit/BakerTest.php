@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Season;
-use App\Baker;
+use App\Models\Season;
+use App\Models\Baker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BakerTest extends TestCase

@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\EpisodeResult;
+use App\Models\EpisodeResult;
+use App\Models\Result;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Facades\Tests\Setup\SeasonFactory;
-use App\Result;
 
 class ManageEpisodeResultsTest extends TestCase
 {

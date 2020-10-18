@@ -7,7 +7,7 @@
 
         <form method="POST" action="/season">
             @include('seasons._form', [
-                'season' => new App\Season,
+                'season' => new App\Models\Season,
                 'buttonText' => 'Create Season'
             ])
         </form>

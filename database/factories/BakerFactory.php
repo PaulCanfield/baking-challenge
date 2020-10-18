@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Season;
+use App\Models\Season;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Baker;
+use App\Models\Baker;
 
 class BakerFactory extends Factory
 {

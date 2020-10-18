@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Season;
+use App\Models\User;
+use App\Models\Season;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SeasonPolicy
@@ -13,8 +13,8 @@ class SeasonPolicy
     /**
      * Determine whether the user can view the season.
      *
-     * @param  \App\User  $user
-     * @param  \App\Season  $season
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Season  $season
      * @return mixed
      */
     public function view(User $user, Season $season) {
@@ -24,7 +24,7 @@ class SeasonPolicy
     /**
      * Determine whether the user can create seasons.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user) {
@@ -34,8 +34,8 @@ class SeasonPolicy
     /**
      * Determine whether the user can update the season.
      *
-     * @param  \App\User  $user
-     * @param  \App\Season  $season
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Season  $season
      * @return mixed
      */
     public function update(User $user, Season $season) {
@@ -49,8 +49,8 @@ class SeasonPolicy
     /**
      * Determine whether the user can delete the season.
      *
-     * @param  \App\User  $user
-     * @param  \App\Season  $season
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Season  $season
      * @return mixed
      */
     public function delete(User $user, Season $season) {
@@ -60,8 +60,8 @@ class SeasonPolicy
     /**
      * Determine whether the user can restore the season.
      *
-     * @param  \App\User  $user
-     * @param  \App\Season  $season
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Season  $season
      * @return mixed
      */
     public function restore(User $user, Season $season) {
@@ -71,8 +71,8 @@ class SeasonPolicy
     /**
      * Determine whether the user can permanently delete the season.
      *
-     * @param  \App\User  $user
-     * @param  \App\Season  $season
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Season  $season
      * @return mixed
      */
     public function forceDelete(User $user, Season $season) {

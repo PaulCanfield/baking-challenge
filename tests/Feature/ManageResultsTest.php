@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Result;
+use App\Models\Result;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;

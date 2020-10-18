@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Episode;
+use App\Models\Episode;
 use App\Http\Requests\MakePredictionRequest;
-use App\Prediction;
-use Illuminate\Http\Request;
+use App\Models\Prediction;
 use Illuminate\Support\Facades\Gate;
 
 class PredictionsController extends Controller

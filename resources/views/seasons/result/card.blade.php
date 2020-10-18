@@ -1,5 +1,5 @@
 <div class="p-2 bg-white shadow rounded my-2">
-    @if(count($results = App\Result::all()))
+    @if(count($results = App\Models\Result::all()))
         <ul class="list-reset text-sm">
             @foreach($results as $result)
                 <li class="mb-2" value="{{ $result->id }}">

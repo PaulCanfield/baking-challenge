@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InvitationFormRequest;
-use App\Season;
-use App\User;
+use App\Models\Season;
+use App\Models\User;
 
 class InvitationController extends Controller
 {

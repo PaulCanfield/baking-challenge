@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Baker;
-use App\Season;
-use App\User;
+use App\Models\Baker;
+use App\Models\Season;
+use App\Models\User;
 use Tests\TestCase;
-use App\FinalResult;
+use App\Models\FinalResult;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

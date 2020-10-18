@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Result;
+use App\Models\Result;
 
 class ResultObserver
 {
@@ -13,7 +13,7 @@ class ResultObserver
     /**
      * Handle the result "created" event.
      *
-     * @param  \App\Result  $result
+     * @param  \App\Models\Result  $result
      * @return void
      */
     public function created(Result $result)
@@ -24,7 +24,7 @@ class ResultObserver
     /**
      * Handle the result "updated" event.
      *
-     * @param  \App\Result  $result
+     * @param  \App\Models\Result  $result
      * @return void
      */
     public function updated(Result $result)
@@ -35,7 +35,7 @@ class ResultObserver
     /**
      * Handle the result "deleted" event.
      *
-     * @param  \App\Result  $result
+     * @param  \App\Models\Result  $result
      * @return void
      */
     public function deleted(Result $result)
@@ -46,7 +46,7 @@ class ResultObserver
     /**
      * Handle the result "restored" event.
      *
-     * @param  \App\Result  $result
+     * @param  \App\Models\Result  $result
      * @return void
      */
     public function restored(Result $result)
@@ -57,7 +57,7 @@ class ResultObserver
     /**
      * Handle the result "force deleted" event.
      *
-     * @param  \App\Result  $result
+     * @param  \App\Models\Result  $result
      * @return void
      */
     public function forceDeleted(Result $result)

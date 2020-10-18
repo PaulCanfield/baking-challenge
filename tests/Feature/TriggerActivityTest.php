@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Baker;
-use App\Episode;
-use App\User;
+use App\Models\Baker;
+use App\Models\Episode;
+use App\Models\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TriggerActivityTest extends TestCase

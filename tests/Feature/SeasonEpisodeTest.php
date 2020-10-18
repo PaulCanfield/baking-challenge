@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Facades\Tests\Setup\SeasonFactory;
-use App\Episode;
+use App\Models\Episode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Season;
+use App\Models\Season;
 
 class SeasonEpisodeTest extends TestCase
 {
