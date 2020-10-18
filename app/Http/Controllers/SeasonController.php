@@ -24,7 +24,6 @@ class SeasonController extends Controller
         return view( 'seasons.edit', compact('season'));
     }
 
-
     public function show(Season $season) {
         $this->authorize('view', $season);
 

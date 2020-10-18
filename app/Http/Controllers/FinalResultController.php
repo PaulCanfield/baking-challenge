@@ -6,7 +6,6 @@ use App\Models\FinalResult;
 use App\Http\Requests\MakeFinalResultRequest;
 use App\Models\Season;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class FinalResultController extends Controller
 {
@@ -59,7 +58,7 @@ class FinalResultController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\FinalResult  $finalResult
+     * @param  \App\Models\FinalResult  $finalResult
      * @return \Illuminate\Http\Response
      */
     public function show(FinalResult $finalResult)
@@ -70,7 +69,7 @@ class FinalResultController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\FinalResult  $finalResult
+     * @param  \App\Models\FinalResult  $finalResult
      * @return \Illuminate\Http\Response
      */
     public function edit(FinalResult $finalResult)
@@ -82,7 +81,7 @@ class FinalResultController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\FinalResult  $finalResult
+     * @param  \App\Models\FinalResult  $finalResult
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, FinalResult $finalResult)
@@ -93,7 +92,7 @@ class FinalResultController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\FinalResult  $finalResult
+     * @param  \App\Models\FinalResult  $finalResult
      * @return \Illuminate\Http\Response
      */
     public function destroy(FinalResult $finalResult)

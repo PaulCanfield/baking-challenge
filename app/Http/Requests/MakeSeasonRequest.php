@@ -35,7 +35,7 @@ class MakeSeasonRequest extends FormRequest
     public function rules()
     {
         return [
-            'year'     => 'sometimes|required|numeric|min:1900|max:2019',
+            'year'     => 'sometimes|required|numeric|min:1900|max:'.((int) date('Y') + 1),
             'title'    => 'sometimes|required',
             'note'     => 'nullable'
         ];
