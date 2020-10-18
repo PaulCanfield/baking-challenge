@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Episode;
+use App\Models\Episode;
 use App\Observers\EpisodeObserver;
 use App\Observers\ResultObserver;
-use App\Result;
+use App\Models\Result;
 use Illuminate\Support\ServiceProvider;
 
 

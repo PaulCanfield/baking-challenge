@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Episode;
-use App\Result;
-use App\User;
+use App\Models\Episode;
+use App\Models\Result;
+use App\Models\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;

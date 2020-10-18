@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Episode;
+use App\Models\Episode;
 
 class EpisodeObserver
 {
@@ -18,7 +18,7 @@ class EpisodeObserver
     /**
      * Handle the episode "created" event.
      *
-     * @param  \App\Episode  $episode
+     * @param  \App\Models\Episode  $episode
      * @return void
      */
     public function created(Episode $episode)
@@ -29,7 +29,7 @@ class EpisodeObserver
     /**
      * Handle the episode "updated" event.
      *
-     * @param  \App\Episode  $episode
+     * @param  \App\Models\Episode  $episode
      * @return void
      */
     public function updated(Episode $episode)
@@ -40,7 +40,7 @@ class EpisodeObserver
     /**
      * Handle the episode "deleted" event.
      *
-     * @param  \App\Episode  $episode
+     * @param  \App\Models\Episode  $episode
      * @return void
      */
     public function deleted(Episode $episode)
@@ -51,7 +51,7 @@ class EpisodeObserver
     /**
      * Handle the episode "restored" event.
      *
-     * @param  \App\Episode  $episode
+     * @param  \App\Models\Episode  $episode
      * @return void
      */
     public function restored(Episode $episode)
@@ -62,7 +62,7 @@ class EpisodeObserver
     /**
      * Handle the episode "force deleted" event.
      *
-     * @param  \App\Episode  $episode
+     * @param  \App\Models\Episode  $episode
      * @return void
      */
     public function forceDeleted(Episode $episode)

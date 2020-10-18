@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\EpisodeResult;
-use App\Result;
+use App\Models\EpisodeResult;
+use App\Models\Result;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EpisodeResultFactory extends Factory

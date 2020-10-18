@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Episode;
-use App\Season;
-use App\Result;
+use App\Models\Episode;
+use App\Models\Season;
+use App\Models\Result;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\EpisodeResult;
-use App\Baker;
-use Illuminate\Support\Str;
+use App\Models\EpisodeResult;
+use App\Models\Baker;
 
 class EpisodeFactory extends Factory
 {

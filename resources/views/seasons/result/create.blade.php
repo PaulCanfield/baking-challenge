@@ -7,7 +7,7 @@
 
         <form method="POST" action="/result">
             @include('seasons.result._form', [
-                'result' => new App\Result,
+                'result' => new App\Models\Result,
                 'buttonText' => 'Create Result'
             ])
         </form>

@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\Baker;
-use App\Season;
-use App\User;
-use App\FinalResult;
+use App\Models\Baker;
+use App\Models\Season;
+use App\Models\User;
+use App\Models\FinalResult;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,8 +26,7 @@ class SeasonTest extends TestCase
 
     public function it_belongs_to_an_owner() {
         $season = Season::factory()->create();
-
-        $this->assertInstanceOf('App\User', $season->owner);
+        $this->assertInstanceOf(User::class, $season->owner);
     }
 
     /** @test */

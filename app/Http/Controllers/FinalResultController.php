@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\FinalResult;
+use App\Models\FinalResult;
 use App\Http\Requests\MakeFinalResultRequest;
-use App\Season;
+use App\Models\Season;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 

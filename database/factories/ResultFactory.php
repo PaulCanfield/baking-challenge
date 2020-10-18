@@ -1,7 +1,7 @@
 <?php
 namespace Database\Factories;
 
-use App\Result;
+use App\Models\Result;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ResultFactory extends Factory

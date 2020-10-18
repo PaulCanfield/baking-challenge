@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Episode;
+use App\Models\User;
+use App\Models\Episode;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EpisodePolicy
@@ -13,8 +13,8 @@ class EpisodePolicy
     /**
      * Determine whether the user can view the episode.
      *
-     * @param  \App\User $user
-     * @param  \App\Episode $episode
+     * @param  \App\Models\User $user
+     * @param  \App\Models\Episode $episode
      * @return mixed
      */
     public function view(User $user, Episode $episode)
@@ -25,7 +25,7 @@ class EpisodePolicy
     /**
      * Determine whether the user can create episodes.
      *
-     * @param  \App\User $user
+     * @param  \App\Models\User $user
      * @return mixed
      */
     public function create(User $user)
@@ -36,8 +36,8 @@ class EpisodePolicy
     /**
      * Determine whether the user can update the episode.
      *
-     * @param  \App\User $user
-     * @param  \App\Episode $episode
+     * @param  \App\Models\User $user
+     * @param  \App\Models\Episode $episode
      * @return mixed
      */
     public function update(User $user, Episode $episode)
@@ -48,8 +48,8 @@ class EpisodePolicy
     /**
      * Determine whether the user can delete the episode.
      *
-     * @param  \App\User $user
-     * @param  \App\Episode $episode
+     * @param  \App\Models\User $user
+     * @param  \App\Models\Episode $episode
      * @return mixed
      */
     public function delete(User $user, Episode $episode)
@@ -60,8 +60,8 @@ class EpisodePolicy
     /**
      * Determine whether the user can restore the episode.
      *
-     * @param  \App\User $user
-     * @param  \App\Episode $episode
+     * @param  \App\Models\User $user
+     * @param  \App\Models\Episode $episode
      * @return mixed
      */
     public function restore(User $user, Episode $episode)
@@ -72,8 +72,8 @@ class EpisodePolicy
     /**
      * Determine whether the user can permanently delete the episode.
      *
-     * @param  \App\User $user
-     * @param  \App\Episode $episode
+     * @param  \App\Models\User $user
+     * @param  \App\Models\Episode $episode
      * @return mixed
      */
     public function forceDelete(User $user, Episode $episode)
@@ -118,7 +118,7 @@ class EpisodePolicy
 
     /**
      * @param User $user
-     * @param Season $season
+     * @param Episode $episode
      * @return bool
      */
     public function predict(User $user, Episode $episode)

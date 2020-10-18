@@ -1,10 +1,9 @@
 <?php
 namespace Database\Factories;
 
-use App\Season;
+use App\Models\Season;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\User;
-use Illuminate\Support\Str;
+use App\Models\User;
 
 class SeasonFactory extends Factory
 {

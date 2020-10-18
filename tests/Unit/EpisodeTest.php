@@ -2,13 +2,13 @@
 
 namespace Tests\Unit;
 
-use App\Baker;
-use App\EpisodeResult;
-use App\Result;
+use App\Models\Baker;
+use App\Models\EpisodeResult;
+use App\Models\Result;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
-use App\Season;
-use App\Episode;
+use App\Models\Season;
+use App\Models\Episode;
 //use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

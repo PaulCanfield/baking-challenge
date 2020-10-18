@@ -2,13 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Baker;
-use App\FinalResult;
-use App\Season;
-use App\User;
+use App\Models\Baker;
+use App\Models\FinalResult;
+use App\Models\Season;
+use App\Models\User;
 use Facades\Tests\Setup\SeasonFactory;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ManageFinalResultsTest extends TestCase

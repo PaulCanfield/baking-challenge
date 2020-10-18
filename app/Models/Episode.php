@@ -1,9 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Exception;
 use Illuminate\Support\Collection;
+use App\Traits\RecordActivity;
 
 class Episode extends SeasonObject
 {

@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BakerFormRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use App\Season;
-use App\Baker;
+use App\Models\Season;
+use App\Models\Baker;
 
 class SeasonBakersController extends Controller
 {

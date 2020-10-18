@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use Tests\TestCase;
 use Facades\Tests\Setup\SeasonFactory;
-use App\Season;
-use App\Baker;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Season;
+use App\Models\Baker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SeasonBakersTest extends TestCase

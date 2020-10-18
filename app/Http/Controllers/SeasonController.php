@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MakeSeasonRequest;
-use App\Season;
+use App\Models\Season;
 
 class SeasonController extends Controller
 {
@@ -37,7 +37,6 @@ class SeasonController extends Controller
 
     public function update(MakeSeasonRequest $request, Season $season) {
         $season->update($request->validated());
-
         return redirect($season->path());
     }
 }

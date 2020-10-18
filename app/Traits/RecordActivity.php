@@ -1,15 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: paul
- * Date: 2019-03-19
- * Time: 09:39
- */
 
-namespace App;
+namespace App\Traits;
 
 use Illuminate\Support\Arr;
-
+use App\Models\Activity;
 
 trait RecordActivity
 {

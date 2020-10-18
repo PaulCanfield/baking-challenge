@@ -17,7 +17,7 @@
     </div>
 
     <div class="flex items-center justify-between">
-        @if(count($results = App\Result::all()))
+        @if(count($results = App\Models\Result::all()))
             <label class="font-bold" for="result">Result</label>
             <select name="result_id" class="w-3/4 shadow-lg">
                 @foreach($results as $result)
