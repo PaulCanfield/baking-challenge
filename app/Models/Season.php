@@ -47,9 +47,7 @@ class Season extends Model
 
     public function invite($user) {
         $member = $this->members()->attach($user);
-
         $user->fireModelEvent('invited');
-
         return $member;
     }
 

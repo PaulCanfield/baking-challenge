@@ -18,10 +18,50 @@ class UsersTableSeeder extends Seeder
     {
         if (array_search(App::environment(), ['prod', 'production']) === false) {
             User::factory()->create([
-                'name' => 'Dalenar Kholin',
+                'name' => 'Admin',
                 'email' => 'admin@example.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('admin1234'), // password
+                'remember_token' => Str::random(10)
+            ]);
+
+            User::factory()->create([
+                'name' => 'Johnathan Creek',
+                'email' => 'creek@mysteryclub.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('temp1234'), // password
+                'remember_token' => Str::random(10)
+            ]);
+
+            User::factory()->create([
+                'name' => 'Jessica Fletcher',
+                'email' => 'fletcher@mysteryclub.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('temp1234'), // password
+                'remember_token' => Str::random(10)
+            ]);
+
+            User::factory()->create([
+                'name' => 'Jane Marple',
+                'email' => 'marple@mysteryclub.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('temp1234'), // password
+                'remember_token' => Str::random(10)
+            ]);
+
+            User::factory()->create([
+                'name' => 'Henry Crabbe',
+                'email' => 'crabbe@mysteryclub.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('temp1234'), // password
+                'remember_token' => Str::random(10)
+            ]);
+
+            User::factory()->create([
+                'name' => 'William Murdoch',
+                'email' => 'murdoch@mysteryclub.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('temp1234'), // password
                 'remember_token' => Str::random(10)
             ]);
         }
